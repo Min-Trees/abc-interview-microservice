@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/register")
     public UserResponse create(@Valid @RequestBody UserRequest request) {
         return userService.create(request);
     }
@@ -28,9 +28,9 @@ public class UserController {
         return userService.login(request);
     }
 
-    @PostMapping("/verify")
-    public UserResponse verify(@Valid @RequestBody VerifyRequest request) {
-        return userService.verify(request);
+    @GetMapping("/verify")
+    public UserResponse verify(@RequestParam("token") String token) {
+        return userService.verify(token);
     }
 
     @PutMapping("/{id}/role")

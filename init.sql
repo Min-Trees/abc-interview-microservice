@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS roles (
     );
 
 -- Seed dữ liệu (bỏ qua nếu đã tồn tại)
-INSERT INTO roles(role_name, description) VALUES
-                                              ('STUDENT',   'Role cho sinh viên'),
-                                              ('RECRUITER', 'Role cho nhà tuyển dụng'),
-                                              ('ADMIN',     'Role cho quản trị viên')
+INSERT INTO roles(role_name, description)
+VALUES ('STUDENT', 'Role cho sinh viên'),
+       ('RECRUITER', 'Role cho nhà tuyển dụng'),
+       ('ADMIN', 'Role cho quản trị viên')
     ON CONFLICT (role_name) DO NOTHING;
