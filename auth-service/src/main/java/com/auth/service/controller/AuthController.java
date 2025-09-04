@@ -1,46 +1,44 @@
 package com.auth.service.controller;
 
-import com.auth.service.dto.LoginRequest;
 import com.auth.service.dto.*;
 import com.auth.service.service.AuthService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/auth")
-@RequiredArgsConstructor
 public class AuthController {
 
     private final AuthService authService;
 
+    public AuthController(AuthService authService) {
+        this.authService = authService;
+    }
+
     @PostMapping("/register")
-    public ResponseEntity<UserDto> register(@Valid @RequestBody RegisterRequest request) {
-        UserDto user = authService.register(request);  // gọi user-service tạo user
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    @ResponseStatus(HttpStatus.CREATED)
+    public Mono<UserDto> register(@RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@Valid @RequestBody LoginRequest request) {
-        TokenResponse tokens = authService.login(request);     // gọi user-service /users/login
-        return ResponseEntity.ok(tokens);
+    public Mono<TokenResponse> login(@RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 
     @PostMapping("/refresh")
-    public ResponseEntity<TokenResponse> refresh(@Valid @RequestBody RefreshRequest request) {
-        return ResponseEntity.ok(authService.refresh(request));
+    public Mono<TokenResponse> refresh(@RequestBody RefreshRequest request) {
+        return authService.refresh(request);
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<TokenResponse> verify(@RequestParam("token") String token) {
-        return ResponseEntity.ok(authService.verify(token));
+    public Mono<TokenResponse> verify(@RequestParam String token) {
+        return authService.verify(token);
     }
 
-    // ví dụ: gọi user-service lấy user theo id
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable Long id) {
-        return ResponseEntity.ok(authService.getUserById(id));
+    public Mono<UserDto> getUserById(@PathVariable Long id) {
+        return authService.getUserById(id);
     }
 }

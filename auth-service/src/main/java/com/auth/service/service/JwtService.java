@@ -1,25 +1,19 @@
 package com.auth.service.service;
+
 import com.auth.service.dto.UserDto;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
-import java.security.Key;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class JwtService {
 
     @Value("${jwt.secret}")
-    private String secret;
+    private String jwtSecret;
 
     @Value("${jwt.access-minutes}")
     private long accessMinutes;
@@ -27,38 +21,33 @@ public class JwtService {
     @Value("${jwt.refresh-days}")
     private long refreshDays;
 
-    private Key key;
-
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-    }
+    @Value("${jwt.issuer}")
+    private String jwtIssuer;
 
     public String generateAccessToken(UserDto user) {
-        Instant now = Instant.now();
         return Jwts.builder()
-                .setSubject(String.valueOf(user.getId()))
-                .claim("roleId", user.getRoleId())
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(accessMinutes, ChronoUnit.MINUTES)))
-                .signWith(key)
+                .setSubject(user.getId().toString()) // Claim `sub`
+                .claim("roles", List.of("USER")) // Claim `roles`, có thể lấy từ UserDto
+                .setIssuer(jwtIssuer) // Claim `iss`
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + accessMinutes * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
     }
 
     public String generateRefreshToken(UserDto user) {
-        Instant now = Instant.now();
         return Jwts.builder()
-                .setSubject(String.valueOf(user.getId()))
-                .setIssuedAt(Date.from(now))
-                .setExpiration(Date.from(now.plus(refreshDays, ChronoUnit.DAYS)))
-                .signWith(key)
+                .setSubject(user.getId().toString()) // Claim `sub`
+                .setIssuer(jwtIssuer) // Claim `iss`
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshDays * 24 * 60 * 60 * 1000))
+                .signWith(SignatureAlgorithm.HS256, jwtSecret)
                 .compact();
     }
 
-    public Claims parse(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
+    public io.jsonwebtoken.Claims parse(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
                 .parseClaimsJws(token)
                 .getBody();
     }

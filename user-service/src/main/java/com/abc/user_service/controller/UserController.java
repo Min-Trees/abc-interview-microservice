@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/register")
     public UserResponse create(@Valid @RequestBody UserRequest request) {
         return userService.create(request);
     }

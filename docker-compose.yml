@@ -10,6 +10,12 @@ volumes:
   config_repo:
 
 services:
+  redis:
+    image: redis:7.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
   # ====== INFRA ======
   postgres:
     image: postgres:16
@@ -163,6 +169,41 @@ services:
       - "8081:8081"
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:8081/actuator/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+
+  # ====== CAREER SERVICE ======
+  career-service:
+    build: ./career-service
+    container_name: career-service
+    environment:
+      SPRING_APPLICATION_NAME: career-service
+      # Lấy cấu hình từ Config Server
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config-service:8888
+      # Đăng ký với Eureka
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      # Ép port nếu config-repo chưa set server.port
+      SERVER_PORT: 8084
+
+      # (TÙY CHỌN) Nếu chưa khai báo datasource trong config-repo,
+      # bạn có thể mở 3 dòng dưới:
+      # SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+      # SPRING_DATASOURCE_USERNAME: postgres
+      # SPRING_DATASOURCE_PASSWORD: 123456
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      config-service:
+        condition: service_healthy
+    networks: [ micro-net ]
+    ports:
+      - "8084:8084"
+    healthcheck:
+      test: [ "CMD", "wget", "-qO-", "http://localhost:8084/actuator/health" ]
       interval: 5s
       timeout: 3s
       retries: 30

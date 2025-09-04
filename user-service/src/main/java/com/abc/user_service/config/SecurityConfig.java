@@ -25,16 +25,17 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        // Public endpoints
-                        .requestMatchers(HttpMethod.GET, "/users/verify", "/api/users/verify").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/verify", "/api/users/verify").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users", "/api/users").permitAll() // Thêm để cho phép đăng ký
-                        .requestMatchers(HttpMethod.POST, "/users/login", "/api/users/login").permitAll() // Thêm để cho phép đăng nhập
-                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        // Everything else requires auth
-                        .anyRequest().authenticated()
-                );
+//                .authorizeHttpRequests(auth -> auth
+//                        // Public endpoints
+//                        .requestMatchers(HttpMethod.GET, "/users/verify", "/api/users/verify").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/users/verify", "/api/users/verify").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/users", "/api/users").permitAll() // Thêm để cho phép đăng ký
+//                        .requestMatchers(HttpMethod.POST, "/users/login", "/api/users/login").permitAll() // Thêm để cho phép đăng nhập
+//                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+//                        // Everything else requires auth
+//                        .anyRequest().authenticated()
+//                );
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
 
         return http.build();
     }
