@@ -278,3 +278,4 @@ if ($success) {
     Write-Host "For help, run: .\quick-create-roles.ps1 -Help" -ForegroundColor Cyan
     exit 1
 }
+

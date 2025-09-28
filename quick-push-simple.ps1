@@ -373,3 +373,4 @@ if ($pushSuccess) {
     Write-Host "For help, run: .\quick-push-simple.ps1 -Help" -ForegroundColor Cyan
     exit 1
 }
+
