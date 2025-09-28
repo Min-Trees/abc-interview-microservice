@@ -25,18 +25,7 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .securityContextRepository(NoOpServerSecurityContextRepository.getInstance()) // stateless
                 .authorizeExchange(auth -> auth
-                        .pathMatchers("/public/**", "/actuator/**", "/auth/**").permitAll()
-                        .anyExchange().authenticated()
-                )
-                .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt.jwtAuthenticationConverter(
-                                new ReactiveJwtAuthenticationConverterAdapter(jwtAuthenticationConverter())
-                        ))
-                        .authenticationFailureHandler((exch, ex) ->
-                                Mono.fromRunnable(() ->
-                                        exch.getExchange().getResponse().setStatusCode(HttpStatus.UNAUTHORIZED)
-                                )
-                        )
+                        .anyExchange().permitAll()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((exchange, e) ->

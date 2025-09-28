@@ -13,7 +13,7 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy file jar của career-service sau khi build
-COPY target/career-service-*.jar app.jar
+COPY --from=build /build/target/career-service-*.jar app.jar
 
 # Mặc định career-service chạy cổng 8084 (bạn chỉnh nếu dự án dùng cổng khác)
 EXPOSE 8084

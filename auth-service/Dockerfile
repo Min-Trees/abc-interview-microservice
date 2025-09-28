@@ -5,9 +5,9 @@ RUN mvn -q -DskipTests dependency:go-offline
 COPY src ./src
 RUN mvn -q -DskipTests clean package
 
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY target/auth-service-*.jar app.jar
-EXPOSE 8082
+COPY --from=build /build/target/auth-service-*.jar app.jar
+EXPOSE 8081
 ENV JAVA_OPTS="-XX:+UseG1GC -XX:MaxRAMPercentage=75"
 ENTRYPOINT ["sh","-c","java $JAVA_OPTS -jar /app/app.jar"]

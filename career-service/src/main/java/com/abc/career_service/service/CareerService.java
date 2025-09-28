@@ -45,4 +45,8 @@ public class CareerService {
         Page<CareerPreference> careerPreferencePage = careerPreferenceRepository.findByUserId(userId, pageable);
         return careerPreferencePage.map(careerPreferenceMapper::toResponse);
     }
+
+    public void deleteCareer(Long careerId) {
+        careerPreferenceRepository.deleteById(careerId);
+    }
 }
