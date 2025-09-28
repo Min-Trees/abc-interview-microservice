@@ -6,7 +6,10 @@ import com.abc.user_service.entity.*;
 import com.abc.user_service.mapper.UserMapper;
 import com.abc.user_service.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,9 +24,18 @@ public class UserService {
     private final EloHistoryRepository eloHistoryRepository;
     private final UserMapper userMapper;
     private final EmailService emailService;
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse create(UserRequest request) {
-        User user = userMapper.toEntity(request);
+        // Create user manually to avoid mapper issues
+        User user = new User();
+        user.setEmail(request.getEmail());
+        user.setPassword(passwordEncoder.encode(request.getPassword())); // Hash password
+        user.setFullName(request.getFullName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setAddress(request.getAddress());
+        user.setIsStudying(request.getIsStudying());
+        
         Role role = roleRepository.findById(request.getRoleId())
                 .orElseThrow(() -> new RuntimeException("Role not found"));
         user.setRole(role);
@@ -45,7 +57,7 @@ public class UserService {
 
     public UserResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .filter(u -> u.getPassword().equals(request.getPassword()))
+                .filter(u -> passwordEncoder.matches(request.getPassword(), u.getPassword()))
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
         return userMapper.toResponse(user);
     }
@@ -113,5 +125,32 @@ public class UserService {
         if (score < 1600) return EloRank.SENIOR_EXPERT;
         if (score < 2100) return EloRank.MASTER;
         return EloRank.LEGEND;
+    }
+
+    // Additional CRUD methods
+    public UserResponse updateUser(Long id, UserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        user.setFullName(request.getFullName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setAddress(request.getAddress());
+        user.setIsStudying(request.getIsStudying());
+        return userMapper.toResponse(userRepository.save(user));
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
+
+    public Page<UserResponse> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable).map(userMapper::toResponse);
+    }
+
+    public Page<UserResponse> getUsersByRole(Long roleId, Pageable pageable) {
+        return userRepository.findByRoleId(roleId, pageable).map(userMapper::toResponse);
+    }
+
+    public Page<UserResponse> getUsersByStatus(UserStatus status, Pageable pageable) {
+        return userRepository.findByStatus(status, pageable).map(userMapper::toResponse);
     }
 }

@@ -1,12 +1,12 @@
 # discovery-service/src/main/resources/application.yml
 server:
-  port: 8761   # fallback nếu chưa kéo được config
+  port: ${DISCOVERY_SERVICE_PORT:8761}
 
 spring:
   application:
     name: discovery-service
   config:
-    import: optional:configserver:http://config-service:8888
+    import: optional:configserver:${CONFIG_SERVER_URI:http://config-service:8888}
   cloud:
     config:
       username: configuser

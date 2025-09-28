@@ -130,7 +130,7 @@ public class AuthService {
         Instant now = Instant.now();
         return Jwts.builder()
                 .setSubject(String.valueOf(user.getId()))
-                .claim("roles", List.of("USER"))
+                .claim("roles", user.getRoleName() != null ? List.of(user.getRoleName()) : List.of("USER"))
                 .setIssuer(jwtIssuer)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(now.plus(accessMinutes, ChronoUnit.MINUTES)))

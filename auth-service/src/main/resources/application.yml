@@ -1,25 +1,25 @@
 server:
-  port: 8081
+  port: ${AUTH_SERVICE_PORT:8081}
 
 spring:
   application:
     name: auth-service
   config:
-    import: optional:configserver:http://config-service:8888
+    import: optional:configserver:${CONFIG_SERVER_URI:http://config-service:8888}
   datasource:
-    url: jdbc:postgresql://postgres:5432/authdb
-    username: postgres
-    password: 123456
+    url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${AUTH_DB:authdb}
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:123456}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create
     show-sql: true
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: npminhtri.be@gmail.com
-    password: cfubhnaxnbdzsnta
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:npminhtri.be@gmail.com}
+    password: ${MAIL_PASSWORD:cfubhnaxnbdzsnta}
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
@@ -28,18 +28,18 @@ spring:
       mail.smtp.writetimeout: 10000
 
 app:
-  verification-url: http://gateway-service:8080/auth/verify
+  verification-url: ${VERIFICATION_URL:http://gateway-service:8080/auth/verify}
 
 jwt:
-  secret: "UCIafMmHwgsJKIgg4xVAL/eOvR3ZXD/ZnYE9AfMaMQg="
-  access-minutes: 30
-  refresh-days: 7
-  issuer: http://auth-service:8081
+  secret: ${JWT_SECRET:UCIafMmHwgsJKIgg4xVAL/eOvR3ZXD/ZnYE9AfMaMQg=}
+  access-minutes: ${JWT_ACCESS_MINUTES:30}
+  refresh-days: ${JWT_REFRESH_DAYS:7}
+  issuer: ${JWT_ISSUER:http://auth-service:8081}
 
 eureka:
   client:
     service-url:
-      defaultZone: http://discovery-service:8761/eureka/
+      defaultZone: ${EUREKA_DEFAULT_ZONE:http://discovery-service:8761/eureka/}
     fetch-registry: true
     register-with-eureka: true
     registryFetchIntervalSeconds: 5
@@ -52,3 +52,22 @@ logging:
     com.auth.service: DEBUG
     org.springframework.web: DEBUG
     reactor.netty: DEBUG
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+
+# Swagger/OpenAPI Configuration
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha

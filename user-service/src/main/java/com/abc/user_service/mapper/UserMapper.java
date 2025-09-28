@@ -10,8 +10,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     @Mapping(target = "role.id", source = "roleId")
+    @Mapping(target = "password", ignore = true)
     User toEntity(UserRequest request);
 
     @Mapping(target = "roleId", source = "role.id")
+    @Mapping(target = "roleName", expression = "java(user.getRole() != null && user.getRole().getRoleName() != null ? user.getRole().getRoleName().name() : null)")
     UserResponse toResponse(User user);
 }
