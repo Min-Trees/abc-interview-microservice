@@ -293,3 +293,6 @@ ON CONFLICT DO NOTHING;
 -- Success message
 \c postgres;
 SELECT 'All databases and tables created successfully!' as message;
+
+
+

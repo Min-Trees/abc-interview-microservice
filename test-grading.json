@@ -1,5 +1,0 @@
-{
-    "question": "Explain the concept of machine learning and its applications in modern technology",
-    "answer": "Machine learning is a subset of artificial intelligence that enables computers to learn and improve from experience without being explicitly programmed. It uses algorithms to analyze data, identify patterns, and make predictions or decisions. Some common applications include recommendation systems like Netflix and Amazon, image recognition in medical diagnosis, natural language processing in chatbots, autonomous vehicles, fraud detection in banking, and personalized marketing. The technology has revolutionized many industries by automating complex tasks and providing insights from large datasets.",
-    "max_score": 100
-}
