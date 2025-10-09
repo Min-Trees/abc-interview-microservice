@@ -1,0 +1,387 @@
+{
+  "testData": {
+    "baseUrl": "http://localhost:8080",
+    "auth": {
+      "register": {
+        "user1": {
+          "email": "testuser1@example.com",
+          "password": "password123",
+          "fullName": "Test User 1",
+          "roleId": 1,
+          "dateOfBirth": "1995-01-15",
+          "address": "123 Main Street, Ho Chi Minh City",
+          "isStudying": false
+        },
+        "user2": {
+          "email": "admin@example.com",
+          "password": "admin123",
+          "fullName": "Admin User",
+          "roleId": 2,
+          "dateOfBirth": "1990-05-20",
+          "address": "456 Admin Street, Ho Chi Minh City",
+          "isStudying": false
+        },
+        "user3": {
+          "email": "recruiter@example.com",
+          "password": "recruiter123",
+          "fullName": "Recruiter User",
+          "roleId": 3,
+          "dateOfBirth": "1988-12-10",
+          "address": "789 Recruiter Street, Ho Chi Minh City",
+          "isStudying": false
+        }
+      },
+      "login": {
+        "user1": {
+          "email": "testuser1@example.com",
+          "password": "password123"
+        },
+        "admin": {
+          "email": "admin@example.com",
+          "password": "admin123"
+        },
+        "recruiter": {
+          "email": "recruiter@example.com",
+          "password": "recruiter123"
+        }
+      }
+    },
+    "career": {
+      "preference1": {
+        "userId": 1,
+        "preferredFields": ["Software Engineering", "Data Science", "Machine Learning"],
+        "experienceLevel": "INTERMEDIATE",
+        "salaryExpectation": 50000,
+        "locationPreference": "Ho Chi Minh City",
+        "workType": "FULL_TIME",
+        "skills": ["Java", "Spring Boot", "React", "PostgreSQL"],
+        "interests": ["Web Development", "AI/ML", "Cloud Computing"]
+      },
+      "preference2": {
+        "userId": 2,
+        "preferredFields": ["DevOps", "Cloud Architecture", "System Administration"],
+        "experienceLevel": "SENIOR",
+        "salaryExpectation": 80000,
+        "locationPreference": "Ho Chi Minh City",
+        "workType": "FULL_TIME",
+        "skills": ["Docker", "Kubernetes", "AWS", "Terraform"],
+        "interests": ["Infrastructure", "Automation", "Security"]
+      }
+    },
+    "questions": {
+      "field1": {
+        "name": "Computer Science",
+        "description": "Computer Science and Information Technology"
+      },
+      "field2": {
+        "name": "Data Science",
+        "description": "Data Science and Analytics"
+      },
+      "topic1": {
+        "name": "Data Structures and Algorithms",
+        "description": "Fundamental data structures and algorithmic problem solving",
+        "fieldId": 1
+      },
+      "topic2": {
+        "name": "Machine Learning",
+        "description": "Machine learning algorithms and applications",
+        "fieldId": 2
+      },
+      "level1": {
+        "name": "Beginner",
+        "description": "Entry level questions",
+        "minScore": 0,
+        "maxScore": 500
+      },
+      "level2": {
+        "name": "Intermediate",
+        "description": "Intermediate level questions",
+        "minScore": 500,
+        "maxScore": 1000
+      },
+      "level3": {
+        "name": "Advanced",
+        "description": "Advanced level questions",
+        "minScore": 1000,
+        "maxScore": 2000
+      },
+      "questionType1": {
+        "name": "Multiple Choice",
+        "description": "Multiple choice questions",
+        "isMultipleChoice": true,
+        "isOpenEnded": false
+      },
+      "questionType2": {
+        "name": "Open Ended",
+        "description": "Open ended questions",
+        "isMultipleChoice": false,
+        "isOpenEnded": true
+      },
+      "question1": {
+        "title": "What is the time complexity of binary search?",
+        "content": "What is the time complexity of binary search algorithm?",
+        "difficulty": "MEDIUM",
+        "topicId": 1,
+        "levelId": 2,
+        "questionTypeId": 1,
+        "createdBy": 1,
+        "isMultipleChoice": true,
+        "isOpenEnded": false,
+        "options": [
+          {
+            "content": "O(n)",
+            "isCorrect": false
+          },
+          {
+            "content": "O(log n)",
+            "isCorrect": true
+          },
+          {
+            "content": "O(n²)",
+            "isCorrect": false
+          },
+          {
+            "content": "O(1)",
+            "isCorrect": false
+          }
+        ]
+      },
+      "question2": {
+        "title": "Explain the concept of machine learning",
+        "content": "Explain the concept of machine learning and provide examples of its applications.",
+        "difficulty": "HARD",
+        "topicId": 2,
+        "levelId": 3,
+        "questionTypeId": 2,
+        "createdBy": 1,
+        "isMultipleChoice": false,
+        "isOpenEnded": true,
+        "options": []
+      },
+      "answer1": {
+        "questionId": 1,
+        "content": "Binary search has O(log n) time complexity because it eliminates half of the search space in each iteration.",
+        "isSample": true,
+        "createdBy": 1
+      },
+      "answer2": {
+        "questionId": 2,
+        "content": "Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed. Examples include recommendation systems, image recognition, and natural language processing.",
+        "isSample": true,
+        "createdBy": 1
+      }
+    },
+    "exams": {
+      "exam1": {
+        "title": "Java Programming Fundamentals",
+        "description": "Test your Java programming skills with this comprehensive exam",
+        "examType": "TECHNICAL",
+        "duration": 60,
+        "maxAttempts": 3,
+        "isActive": true,
+        "createdBy": 1
+      },
+      "exam2": {
+        "title": "Data Science Assessment",
+        "description": "Evaluate your data science knowledge and skills",
+        "examType": "TECHNICAL",
+        "duration": 90,
+        "maxAttempts": 2,
+        "isActive": true,
+        "createdBy": 2
+      },
+      "examQuestion1": {
+        "examId": 1,
+        "questionId": 1,
+        "order": 1,
+        "points": 10
+      },
+      "examQuestion2": {
+        "examId": 1,
+        "questionId": 2,
+        "order": 2,
+        "points": 20
+      },
+      "registration1": {
+        "examId": 1,
+        "userId": 1,
+        "registrationDate": "2024-01-15T10:00:00Z"
+      },
+      "answer1": {
+        "examId": 1,
+        "questionId": 1,
+        "userId": 1,
+        "answerText": "O(log n)",
+        "isCorrect": true,
+        "timeSpent": 30
+      },
+      "answer2": {
+        "examId": 1,
+        "questionId": 2,
+        "userId": 1,
+        "answerText": "Machine learning is a subset of AI that enables computers to learn from data without explicit programming. It includes supervised learning (classification, regression), unsupervised learning (clustering, dimensionality reduction), and reinforcement learning.",
+        "isCorrect": true,
+        "timeSpent": 45
+      },
+      "result1": {
+        "examId": 1,
+        "userId": 1,
+        "score": 85,
+        "totalScore": 100,
+        "timeSpent": 45,
+        "isPassed": true
+      }
+    },
+    "news": {
+      "news1": {
+        "title": "New Job Opportunities in Tech Industry",
+        "content": "Exciting new job opportunities are available in the technology sector. We are looking for skilled developers, data scientists, and DevOps engineers to join our growing team.",
+        "newsType": "JOB_OPPORTUNITY",
+        "fieldId": 1,
+        "createdBy": 1,
+        "tags": ["tech", "jobs", "opportunities", "hiring"]
+      },
+      "news2": {
+        "title": "Latest Trends in Machine Learning",
+        "content": "Discover the latest trends and developments in machine learning, including new algorithms, frameworks, and real-world applications.",
+        "newsType": "TECHNICAL_NEWS",
+        "fieldId": 2,
+        "createdBy": 2,
+        "tags": ["machine learning", "AI", "technology", "trends"]
+      },
+      "recruitment1": {
+        "title": "Senior Java Developer Position",
+        "content": "We are looking for an experienced Java developer to join our team. The ideal candidate should have 3+ years of experience with Spring Boot, microservices, and cloud technologies.",
+        "newsType": "RECRUITMENT",
+        "fieldId": 1,
+        "createdBy": 3,
+        "companyName": "Tech Corp",
+        "location": "Ho Chi Minh City",
+        "salary": "2000-3000 USD",
+        "requirements": ["Java", "Spring Boot", "3+ years experience", "Microservices", "Cloud"],
+        "tags": ["java", "spring", "microservices", "senior", "developer"]
+      }
+    },
+    "nlp": {
+      "similarityCheck": {
+        "question_text": "What is the time complexity of binary search?",
+        "exclude_id": 1
+      },
+      "gradingEssay": {
+        "question": "Explain the concept of machine learning",
+        "answer": "Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed. It includes supervised learning, unsupervised learning, and reinforcement learning.",
+        "max_score": 100
+      },
+      "examGrading": {
+        "exam_id": 1,
+        "question_id": 2,
+        "answer_text": "Machine learning is a powerful technology that allows computers to learn from data and make predictions or decisions without being explicitly programmed for each task.",
+        "max_score": 100
+      }
+    },
+    "users": {
+      "roleUpdate": {
+        "role": "ADMIN"
+      },
+      "statusUpdate": {
+        "status": "ACTIVE"
+      },
+      "eloUpdate": {
+        "userId": 1,
+        "eloScore": 1500
+      }
+    }
+  },
+  "testScenarios": {
+    "scenario1": {
+      "name": "Complete User Registration and Login Flow",
+      "steps": [
+        "1. POST /auth/register with user1 data",
+        "2. POST /auth/login with user1 credentials",
+        "3. GET /auth/verify with token",
+        "4. GET /auth/users/1 to get user info"
+      ]
+    },
+    "scenario2": {
+      "name": "Career Preference Management",
+      "steps": [
+        "1. POST /career with preference1 data",
+        "2. GET /career/1 to retrieve preference",
+        "3. PUT /career/update/1 with updated data",
+        "4. GET /career/preferences/1 to list all preferences",
+        "5. DELETE /career/1 to remove preference"
+      ]
+    },
+    "scenario3": {
+      "name": "Question Management Workflow",
+      "steps": [
+        "1. POST /fields with field1 data",
+        "2. POST /topics with topic1 data",
+        "3. POST /levels with level1 data",
+        "4. POST /question-types with questionType1 data",
+        "5. POST /questions with question1 data",
+        "6. GET /questions/1 to retrieve question",
+        "7. POST /answers with answer1 data",
+        "8. POST /questions/1/approve to approve question"
+      ]
+    },
+    "scenario4": {
+      "name": "Complete Exam Workflow",
+      "steps": [
+        "1. POST /exams with exam1 data",
+        "2. POST /exams/questions with examQuestion1 data",
+        "3. POST /exams/registrations with registration1 data",
+        "4. POST /exams/1/start to start exam",
+        "5. POST /exams/answers with answer1 data",
+        "6. POST /exams/1/complete to complete exam",
+        "7. POST /exams/results with result1 data",
+        "8. GET /exams/1/results to view results"
+      ]
+    },
+    "scenario5": {
+      "name": "News and Recruitment Management",
+      "steps": [
+        "1. POST /news with news1 data",
+        "2. GET /news/1 to retrieve news",
+        "3. POST /news/1/approve to approve news",
+        "4. POST /recruitments with recruitment1 data",
+        "5. GET /recruitments to list all recruitments"
+      ]
+    },
+    "scenario6": {
+      "name": "NLP Service Testing",
+      "steps": [
+        "1. GET /health to check service health",
+        "2. POST /questions/similarity/check with similarityCheck data",
+        "3. POST /grading/essay with gradingEssay data",
+        "4. POST /exams/1/questions/1/grade with examGrading data"
+      ]
+    }
+  },
+  "environmentVariables": {
+    "baseUrl": "http://localhost:8080",
+    "authUrl": "http://localhost:8081",
+    "userUrl": "http://localhost:8082",
+    "careerUrl": "http://localhost:8084",
+    "questionUrl": "http://localhost:8085",
+    "examUrl": "http://localhost:8086",
+    "newsUrl": "http://localhost:8087",
+    "nlpUrl": "http://localhost:8088",
+    "accessToken": "{{accessToken}}",
+    "refreshToken": "{{refreshToken}}",
+    "userId": "{{userId}}",
+    "examId": "{{examId}}",
+    "questionId": "{{questionId}}"
+  },
+  "headers": {
+    "common": {
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    },
+    "authenticated": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer {{accessToken}}"
+    }
+  }
+}

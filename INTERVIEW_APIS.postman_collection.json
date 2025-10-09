@@ -1,0 +1,747 @@
+{
+  "info": {
+    "name": "Interview Microservice ABC - API Collection",
+    "description": "Complete API collection for Interview Microservice ABC system",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🔐 Auth Service",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser1@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Test User 1\",\n  \"roleId\": 1,\n  \"dateOfBirth\": \"1995-01-15\",\n  \"address\": \"123 Main Street, Ho Chi Minh City\",\n  \"isStudying\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser1@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('accessToken', response.accessToken);",
+                  "    pm.collectionVariables.set('userId', response.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/verify?token={{accessToken}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "verify"],
+              "query": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "users", "{{userId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "👤 User Service",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser2@example.com\",\n  \"password\": \"password123\",\n  \"fullName\": \"Test User 2\",\n  \"roleId\": 1,\n  \"dateOfBirth\": \"1995-01-15\",\n  \"address\": \"123 Main Street, Ho Chi Minh City\",\n  \"isStudying\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser1@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get User by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}"]
+            }
+          }
+        },
+        {
+          "name": "Update User Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/role",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}", "role"]
+            }
+          }
+        },
+        {
+          "name": "Update User Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACTIVE\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/{{userId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "{{userId}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Apply ELO Score",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"eloScore\": 1500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/elo",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "elo"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🎯 Career Service",
+      "item": [
+        {
+          "name": "Create Career Preference",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"preferredFields\": [\"Software Engineering\", \"Data Science\", \"Machine Learning\"],\n  \"experienceLevel\": \"INTERMEDIATE\",\n  \"salaryExpectation\": 50000,\n  \"locationPreference\": \"Ho Chi Minh City\",\n  \"workType\": \"FULL_TIME\",\n  \"skills\": [\"Java\", \"Spring Boot\", \"React\", \"PostgreSQL\"],\n  \"interests\": [\"Web Development\", \"AI/ML\", \"Cloud Computing\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/career",
+              "host": ["{{baseUrl}}"],
+              "path": ["career"]
+            }
+          }
+        },
+        {
+          "name": "Get Career by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/career/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["career", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Career Preference",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"userId\": {{userId}},\n  \"preferredFields\": [\"Software Engineering\", \"DevOps\", \"Cloud Architecture\"],\n  \"experienceLevel\": \"SENIOR\",\n  \"salaryExpectation\": 80000,\n  \"locationPreference\": \"Ho Chi Minh City\",\n  \"workType\": \"FULL_TIME\",\n  \"skills\": [\"Java\", \"Spring Boot\", \"Docker\", \"Kubernetes\"],\n  \"interests\": [\"Microservices\", \"Cloud Computing\", \"DevOps\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/career/update/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["career", "update", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Career Preferences by User",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/career/preferences/{{userId}}?page=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["career", "preferences", "{{userId}}"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Career Preference",
+          "request": {
+            "method": "DELETE",
+            "url": {
+              "raw": "{{baseUrl}}/career/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["career", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "❓ Question Service",
+      "item": [
+        {
+          "name": "Create Field",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Computer Science\",\n  \"description\": \"Computer Science and Information Technology\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/fields",
+              "host": ["{{baseUrl}}"],
+              "path": ["fields"]
+            }
+          }
+        },
+        {
+          "name": "Create Topic",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Data Structures and Algorithms\",\n  \"description\": \"Fundamental data structures and algorithmic problem solving\",\n  \"fieldId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/topics",
+              "host": ["{{baseUrl}}"],
+              "path": ["topics"]
+            }
+          }
+        },
+        {
+          "name": "Create Level",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Beginner\",\n  \"description\": \"Entry level questions\",\n  \"minScore\": 0,\n  \"maxScore\": 500\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/levels",
+              "host": ["{{baseUrl}}"],
+              "path": ["levels"]
+            }
+          }
+        },
+        {
+          "name": "Create Question Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Multiple Choice\",\n  \"description\": \"Multiple choice questions\",\n  \"isMultipleChoice\": true,\n  \"isOpenEnded\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/question-types",
+              "host": ["{{baseUrl}}"],
+              "path": ["question-types"]
+            }
+          }
+        },
+        {
+          "name": "Create Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"What is the time complexity of binary search?\",\n  \"content\": \"What is the time complexity of binary search algorithm?\",\n  \"difficulty\": \"MEDIUM\",\n  \"topicId\": 1,\n  \"levelId\": 1,\n  \"questionTypeId\": 1,\n  \"createdBy\": {{userId}},\n  \"isMultipleChoice\": true,\n  \"isOpenEnded\": false,\n  \"options\": [\n    {\n      \"content\": \"O(n)\",\n      \"isCorrect\": false\n    },\n    {\n      \"content\": \"O(log n)\",\n      \"isCorrect\": true\n    },\n    {\n      \"content\": \"O(n²)\",\n      \"isCorrect\": false\n    },\n    {\n      \"content\": \"O(1)\",\n      \"isCorrect\": false\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/questions",
+              "host": ["{{baseUrl}}"],
+              "path": ["questions"]
+            }
+          }
+        },
+        {
+          "name": "Get Question by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/questions/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["questions", "1"]
+            }
+          }
+        },
+        {
+          "name": "Approve Question",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/questions/1/approve?adminId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["questions", "1", "approve"],
+              "query": [
+                {
+                  "key": "adminId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Answer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"questionId\": 1,\n  \"content\": \"Binary search has O(log n) time complexity because it eliminates half of the search space in each iteration.\",\n  \"isSample\": true,\n  \"createdBy\": {{userId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/answers",
+              "host": ["{{baseUrl}}"],
+              "path": ["answers"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📝 Exam Service",
+      "item": [
+        {
+          "name": "Create Exam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Java Programming Fundamentals\",\n  \"description\": \"Test your Java programming skills with this comprehensive exam\",\n  \"examType\": \"TECHNICAL\",\n  \"duration\": 60,\n  \"maxAttempts\": 3,\n  \"isActive\": true,\n  \"createdBy\": {{userId}}\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/exams",
+              "host": ["{{baseUrl}}"],
+              "path": ["exams"]
+            }
+          }
+        },
+        {
+          "name": "Get Exam by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/exams/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["exams", "1"]
+            }
+          }
+        },
+        {
+          "name": "Publish Exam",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/exams/1/publish?userId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["exams", "1", "publish"],
+              "query": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Register for Exam",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"examId\": 1,\n  \"userId\": {{userId}},\n  \"registrationDate\": \"2024-01-15T10:00:00Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/exams/registrations",
+              "host": ["{{baseUrl}}"],
+              "path": ["exams", "registrations"]
+            }
+          }
+        },
+        {
+          "name": "Submit Answer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"examId\": 1,\n  \"questionId\": 1,\n  \"userId\": {{userId}},\n  \"answerText\": \"O(log n)\",\n  \"isCorrect\": true,\n  \"timeSpent\": 30\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/exams/answers",
+              "host": ["{{baseUrl}}"],
+              "path": ["exams", "answers"]
+            }
+          }
+        },
+        {
+          "name": "Submit Result",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"examId\": 1,\n  \"userId\": {{userId}},\n  \"score\": 85,\n  \"totalScore\": 100,\n  \"timeSpent\": 45,\n  \"isPassed\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/exams/results",
+              "host": ["{{baseUrl}}"],
+              "path": ["exams", "results"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📰 News Service",
+      "item": [
+        {
+          "name": "Create News",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"New Job Opportunities in Tech Industry\",\n  \"content\": \"Exciting new job opportunities are available in the technology sector. We are looking for skilled developers, data scientists, and DevOps engineers to join our growing team.\",\n  \"newsType\": \"JOB_OPPORTUNITY\",\n  \"fieldId\": 1,\n  \"createdBy\": {{userId}},\n  \"tags\": [\"tech\", \"jobs\", \"opportunities\", \"hiring\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/news",
+              "host": ["{{baseUrl}}"],
+              "path": ["news"]
+            }
+          }
+        },
+        {
+          "name": "Get News by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/news/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["news", "1"]
+            }
+          }
+        },
+        {
+          "name": "Approve News",
+          "request": {
+            "method": "POST",
+            "url": {
+              "raw": "{{baseUrl}}/news/1/approve?adminId={{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["news", "1", "approve"],
+              "query": [
+                {
+                  "key": "adminId",
+                  "value": "{{userId}}"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Recruitment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Java Developer Position\",\n  \"content\": \"We are looking for an experienced Java developer to join our team. The ideal candidate should have 3+ years of experience with Spring Boot, microservices, and cloud technologies.\",\n  \"newsType\": \"RECRUITMENT\",\n  \"fieldId\": 1,\n  \"createdBy\": {{userId}},\n  \"companyName\": \"Tech Corp\",\n  \"location\": \"Ho Chi Minh City\",\n  \"salary\": \"2000-3000 USD\",\n  \"requirements\": [\"Java\", \"Spring Boot\", \"3+ years experience\", \"Microservices\", \"Cloud\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/recruitments",
+              "host": ["{{baseUrl}}"],
+              "path": ["recruitments"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🤖 NLP Service",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Check Question Similarity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question_text\": \"What is the time complexity of binary search?\",\n  \"exclude_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/questions/similarity/check",
+              "host": ["{{baseUrl}}"],
+              "path": ["questions", "similarity", "check"]
+            }
+          }
+        },
+        {
+          "name": "Grade Essay",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question\": \"Explain the concept of machine learning\",\n  \"answer\": \"Machine learning is a subset of artificial intelligence that enables computers to learn and make decisions from data without being explicitly programmed.\",\n  \"max_score\": 100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/grading/essay",
+              "host": ["{{baseUrl}}"],
+              "path": ["grading", "essay"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
