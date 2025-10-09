@@ -1,30 +1,30 @@
 # =============================================
-# Script tự động chạy init-with-data.sql
-# Tạo databases và insert FULL dữ liệu mẫu
+# Script tu dong chay init-with-data.sql
+# Tao databases va insert FULL du lieu mau
 # =============================================
 
 Write-Host "=========================================" -ForegroundColor Cyan
-Write-Host "CHẠY INIT-WITH-DATA.SQL" -ForegroundColor Cyan
-Write-Host "Tạo databases + Insert 160+ records data mẫu" -ForegroundColor Cyan
+Write-Host "CHAY INIT-WITH-DATA.SQL" -ForegroundColor Cyan
+Write-Host "Tao databases + Insert 160+ records data mau" -ForegroundColor Cyan
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Kiểm tra file tồn tại
+# Kiem tra file ton tai
 if (-not (Test-Path "init-with-data.sql")) {
     Write-Host "[X] Khong tim thay file init-with-data.sql!" -ForegroundColor Red
-    Write-Host "Vui lòng đảm bảo file tồn tại trong thư mục hiện tại" -ForegroundColor Yellow
+    Write-Host "Vui long dam bao file ton tai trong thu muc hien tai" -ForegroundColor Yellow
     exit 1
 }
 
-Write-Host "Chọn phương thức:" -ForegroundColor Cyan
+Write-Host "Chon phuong thuc:" -ForegroundColor Cyan
 Write-Host ""
-Write-Host "1. Xóa volume và khởi tạo lại (KHUYẾN NGHỊ)" -ForegroundColor Green
-Write-Host "   → Dữ liệu đầy đủ nhất, clean start" -ForegroundColor Gray
+Write-Host "1. Xoa volume va khoi tao lai (KHUYEN NGHI)" -ForegroundColor Green
+Write-Host "   -> Du lieu day du nhat, clean start" -ForegroundColor Gray
 Write-Host ""
-Write-Host "2. Chạy vào container đang chạy" -ForegroundColor Yellow
-Write-Host "   → Nhanh hơn, giữ một số config" -ForegroundColor Gray
+Write-Host "2. Chay vao container dang chay" -ForegroundColor Yellow
+Write-Host "   -> Nhanh hon, giu mot so config" -ForegroundColor Gray
 Write-Host ""
-$choice = Read-Host "Nhập lựa chọn (1 hoặc 2)"
+$choice = Read-Host "Nhap lua chon (1 hoac 2)"
 
 if ($choice -eq "1") {
     Write-Host ""
@@ -32,7 +32,7 @@ if ($choice -eq "1") {
     $confirm = Read-Host "Ban co chac chan muon tiep tuc? (yes/no)"
     
     if ($confirm -ne "yes") {
-        Write-Host "Đã hủy thao tác" -ForegroundColor Yellow
+        Write-Host "Da huy thao tac" -ForegroundColor Yellow
         exit 0
     }
     
@@ -62,15 +62,15 @@ if ($choice -eq "1") {
     
     Write-Host ""
     Write-Host "[*] Dang cho PostgreSQL khoi dong va chay init script..." -ForegroundColor Yellow
-    Write-Host "   Quá trình này có thể mất 20-30 giây..." -ForegroundColor Gray
+    Write-Host "   Qua trinh nay co the mat 20-30 giay..." -ForegroundColor Gray
     Write-Host ""
     
-    # Đợi và hiển thị progress
+    # Doi va hien thi progress
     for ($i = 1; $i -le 25; $i++) {
-        Write-Progress -Activity "Khởi động PostgreSQL" -Status "Đang xử lý... ($i/25)" -PercentComplete ($i * 4)
+        Write-Progress -Activity "Khoi dong PostgreSQL" -Status "Dang xu ly... ($i/25)" -PercentComplete ($i * 4)
         Start-Sleep -Seconds 1
     }
-    Write-Progress -Activity "Khởi động PostgreSQL" -Completed
+    Write-Progress -Activity "Khoi dong PostgreSQL" -Completed
     
     Write-Host ""
     Write-Host "[*] Dang khoi dong cac services khac..." -ForegroundColor Yellow
@@ -99,7 +99,7 @@ if ($choice -eq "1") {
     
     Write-Host ""
     Write-Host "[*] Dang chay init-with-data.sql..." -ForegroundColor Yellow
-    Write-Host "   Quá trình này có thể mất 10-15 giây..." -ForegroundColor Gray
+    Write-Host "   Qua trinh nay co the mat 10-15 giay..." -ForegroundColor Gray
     docker exec -i interview-postgres psql -U postgres -f /init-with-data.sql
     
     Write-Host ""
@@ -114,7 +114,7 @@ if ($choice -eq "1") {
     exit 1
 }
 
-# Kiểm tra kết quả
+# Kiem tra ket qua
 Write-Host ""
 Write-Host "=========================================" -ForegroundColor Cyan
 Write-Host "KIEM TRA KET QUA" -ForegroundColor Cyan
