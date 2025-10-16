@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class QuestionTypeResponse {
     private Long id;
-    private String questionTypeName;
+    private String name;
     private String description;
 }

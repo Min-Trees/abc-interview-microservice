@@ -1,5 +1,5 @@
 server:
-  port: ${GATEWAY_SERVICE_PORT:8080}
+  port: ${GATEWAY_SERVICE_PORT:8222}
 
 spring:
   application:
@@ -64,7 +64,7 @@ spring:
 
         - id: question-service
           uri: lb://QUESTION-SERVICE
-          predicates: [ Path=/questions/**, Path=/answers/**, Path=/topics/**, Path=/fields/**, Path=/levels/**, Path=/question-types/** ]
+          predicates: [ Path=/questions/** ]
           filters:
             - AddUserInfoToHeader
             - name: RequestRateLimiter

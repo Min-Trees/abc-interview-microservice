@@ -1,0 +1,66 @@
+{
+  "name": "interview-microservice-sdk",
+  "version": "1.0.0",
+  "description": "Frontend SDK for Interview Microservice System",
+  "main": "api-client.js",
+  "types": "types.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint *.js *.ts",
+    "format": "prettier --write *.js *.ts *.md"
+  },
+  "keywords": [
+    "interview",
+    "microservice",
+    "api",
+    "sdk",
+    "frontend",
+    "react",
+    "vue",
+    "typescript"
+  ],
+  "author": "Interview System Team",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "jest": "^29.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0",
+    "vue": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    }
+  },
+  "files": [
+    "api-client.js",
+    "react-hooks.js",
+    "vue-composables.js",
+    "axios-config.js",
+    "types.ts",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/interview-microservice-sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/interview-microservice-sdk/issues"
+  },
+  "homepage": "https://github.com/your-org/interview-microservice-sdk#readme"
+}

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # 🗄️ DATABASE
   postgres:
@@ -13,7 +11,7 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init-with-data.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - interview-network
     healthcheck:
@@ -81,7 +79,7 @@ services:
     build: ./gateway-service
     container_name: interview-gateway-service
     ports:
-      - "${GATEWAY_SERVICE_PORT:-8080}:8080"
+      - "${GATEWAY_SERVICE_PORT:-8080}:8222"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       JWT_SECRET: ${JWT_SECRET}
@@ -95,7 +93,7 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8222/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 3

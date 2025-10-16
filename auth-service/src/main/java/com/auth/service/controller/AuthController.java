@@ -18,7 +18,7 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<UserDto> register(@RequestBody RegisterRequest request) {
+    public Mono<TokenResponse> register(@RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
@@ -37,8 +37,11 @@ public class AuthController {
         return authService.verify(token);
     }
 
-    @GetMapping("/users/{id}")
-    public Mono<UserDto> getUserById(@PathVariable Long id) {
-        return authService.getUserById(id);
+    @GetMapping("/user-info")
+    public Mono<UserDto> getUserInfo(@RequestHeader("Authorization") String authorization) {
+        String token = authorization.replace("Bearer ", "");
+        return authService.getUserInfoByToken(token);
     }
+
+    // Removed: User management should be handled by User Service
 }

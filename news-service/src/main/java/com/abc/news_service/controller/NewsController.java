@@ -61,6 +61,11 @@ public class NewsController {
         return newsService.voteNews(newsId, voteType);
     }
 
+    @GetMapping
+    public Page<NewsResponse> getAllNews(Pageable pageable) {
+        return newsService.getAllNews(pageable);
+    }
+
     @GetMapping("/type/{newsType}")
     public Page<NewsResponse> listNewsByType(@PathVariable String newsType, Pageable pageable) {
         return newsService.listNewsByType(newsType, pageable);

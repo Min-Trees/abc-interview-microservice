@@ -11,30 +11,43 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PostMapping("/register")
-    public UserResponse create(@Valid @RequestBody UserRequest request) {
+    // Internal endpoints - called by Auth Service only
+    @PostMapping("/internal/create")
+    public UserResponse createInternal(@Valid @RequestBody UserRequest request) {
         return userService.create(request);
+    }
+
+    @GetMapping("/check-email/{email}")
+    public Boolean checkEmailExists(@PathVariable String email) {
+        return userService.checkEmailExists(email);
+    }
+
+    @GetMapping("/by-email/{email}")
+    public UserResponse getByEmail(@PathVariable String email) {
+        return userService.getByEmail(email);
+    }
+
+    @PostMapping("/validate-password")
+    public Boolean validatePassword(@RequestBody Map<String, String> request) {
+        return userService.validatePassword(request.get("email"), request.get("password"));
+    }
+
+    @PostMapping("/verify-token")
+    public UserResponse verifyToken(@RequestBody Map<String, String> request) {
+        return userService.verifyToken(request.get("token"));
     }
 
     @GetMapping("/{id}")
     public UserResponse getById(@PathVariable Long id) {
         return userService.getById(id);
-    }
-
-    @PostMapping("/login")
-    public UserResponse login(@Valid @RequestBody LoginRequest request) {
-        return userService.login(request);
-    }
-
-    @GetMapping("/verify")
-    public UserResponse verify(@RequestParam("token") String token) {
-        return userService.verify(token);
     }
 
     @PutMapping("/{id}/role")

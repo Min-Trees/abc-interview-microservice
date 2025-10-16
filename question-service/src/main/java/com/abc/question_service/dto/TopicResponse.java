@@ -6,6 +6,6 @@ import lombok.Data;
 public class TopicResponse {
     private Long id;
     private Long fieldId;
-    private String topicName;
+    private String name;
     private String description;
 }

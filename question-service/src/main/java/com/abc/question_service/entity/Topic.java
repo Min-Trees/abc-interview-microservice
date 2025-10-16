@@ -17,7 +17,7 @@ public class Topic {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "field_id")
     private Field field;
-    private String topicName;
+    private String name;
     private String description;
 }
 

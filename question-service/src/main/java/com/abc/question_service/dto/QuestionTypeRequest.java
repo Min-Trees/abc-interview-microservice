@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class QuestionTypeRequest {
-    private String questionTypeName;
+    private String name;
     private String description;
 }

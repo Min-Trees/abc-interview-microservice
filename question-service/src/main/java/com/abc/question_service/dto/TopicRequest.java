@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class TopicRequest {
     private Long fieldId;
-    private String topicName;
+    private String name;
     private String description;
 }

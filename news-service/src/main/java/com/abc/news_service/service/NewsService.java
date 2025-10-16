@@ -64,6 +64,10 @@ public class NewsService {
         return newsMapper.toResponse(newsRepository.save(news));
     }
 
+    public Page<NewsResponse> getAllNews(Pageable pageable) {
+        return newsRepository.findAll(pageable).map(newsMapper::toResponse);
+    }
+
     public Page<NewsResponse> listNewsByType(String newsType, Pageable pageable) {
         return newsRepository.findByNewsType(newsType, pageable).map(newsMapper::toResponse);
     }

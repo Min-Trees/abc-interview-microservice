@@ -21,11 +21,11 @@ GRANT ALL PRIVILEGES ON DATABASE examdb TO postgres;
 GRANT ALL PRIVILEGES ON DATABASE newsdb TO postgres;
 
 -- =============================================
--- AUTH SERVICE DATABASE
+-- AUTH SERVICE DATABASE (ONLY ROLES)
 -- =============================================
 \c authdb;
 
--- Create roles table
+-- Create roles table (Auth Service only manages roles)
 CREATE TABLE IF NOT EXISTS roles (
     id BIGSERIAL PRIMARY KEY,
     role_name VARCHAR(50) NOT NULL UNIQUE,
@@ -38,6 +38,9 @@ INSERT INTO roles(role_name, description) VALUES
 ('RECRUITER', 'Role cho nhà tuyển dụng'),
 ('ADMIN', 'Role cho quản trị viên')
 ON CONFLICT (role_name) DO NOTHING;
+
+-- Note: Auth Service does NOT store user data anymore
+-- All user data is stored in User Service (userdb)
 
 -- =============================================
 -- USER SERVICE DATABASE

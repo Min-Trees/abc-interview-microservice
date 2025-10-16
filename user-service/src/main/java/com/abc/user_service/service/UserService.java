@@ -51,7 +51,7 @@ public class UserService {
 
     public UserResponse getById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new com.abc.user_service.exception.ResourceNotFoundException("User", "id", id));
         return userMapper.toResponse(user);
     }
 
@@ -152,5 +152,36 @@ public class UserService {
 
     public Page<UserResponse> getUsersByStatus(UserStatus status, Pageable pageable) {
         return userRepository.findByStatus(status, pageable).map(userMapper::toResponse);
+    }
+
+    // Internal methods for Auth Service
+    public Boolean checkEmailExists(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    public UserResponse getByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElse(null);
+        return user != null ? userMapper.toResponse(user) : null;
+    }
+
+    public Boolean validatePassword(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElse(null);
+        if (user == null) return false;
+        return passwordEncoder.matches(password, user.getPassword());
+    }
+
+    public UserResponse verifyToken(String token) {
+        User user = userRepository.findByVerifyToken(token)
+                .orElse(null);
+        if (user == null) return null;
+        
+        // Update status to ACTIVE
+        user.setStatus(UserStatus.ACTIVE);
+        user.setVerifyToken(null);
+        userRepository.save(user);
+        
+        return userMapper.toResponse(user);
     }
 }

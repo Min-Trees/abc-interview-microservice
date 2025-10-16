@@ -21,4 +21,10 @@ public class QuestionResponse {
     private Long approvedBy;
     private Integer usefulVote;
     private Integer unusefulVote;
+    
+    // Relationship names for better API response
+    private String fieldName;
+    private String topicName;
+    private String levelName;
+    private String questionTypeName;
 }

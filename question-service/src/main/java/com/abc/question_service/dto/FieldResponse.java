@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class FieldResponse {
     private Long id;
-    private String fieldName;
+    private String name;
     private String description;
 }

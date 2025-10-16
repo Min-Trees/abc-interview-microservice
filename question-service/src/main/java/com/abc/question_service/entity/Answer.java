@@ -24,7 +24,7 @@ public class Answer {
     @JoinColumn(name = "question_type_id")
     private QuestionType questionType;
     @Column(columnDefinition = "text")
-    private String answerContent;
+    private String content;
     private Boolean isCorrect;
     private Double similarityScore;
     private Integer usefulVote;

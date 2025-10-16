@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class FieldRequest {
-    private String fieldName;
+    private String name;
     private String description;
 }

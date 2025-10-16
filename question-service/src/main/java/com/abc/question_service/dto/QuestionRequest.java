@@ -9,7 +9,7 @@ public class QuestionRequest {
     private Long fieldId;
     private Long levelId;
     private Long questionTypeId;
-    private String questionContent;
-    private String questionAnswer;
+    private String content;  // Changed from questionContent to content
+    private String answer;   // Changed from questionAnswer to answer
     private String language;
 }

@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class LevelResponse {
     private Long id;
-    private String levelName;
+    private String name;
     private String description;
 }

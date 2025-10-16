@@ -38,6 +38,11 @@ public class ExamController {
         return examService.completeExam(examId);
     }
 
+    @GetMapping
+    public Page<ExamResponse> getAllExams(Pageable pageable) {
+        return examService.getAllExams(pageable);
+    }
+
     @GetMapping("/user/{userId}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Page<ExamResponse> listExamsByUser(@PathVariable Long userId, Pageable pageable) {

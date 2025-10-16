@@ -7,7 +7,7 @@ public class AnswerRequest {
     private Long userId;
     private Long questionId;
     private Long questionTypeId;
-    private String answerContent;
+    private String content;
     private Boolean isCorrect;
     private Boolean isSampleAnswer;
     private Integer orderNumber;

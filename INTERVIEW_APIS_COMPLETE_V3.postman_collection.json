@@ -1,0 +1,963 @@
+{
+	"info": {
+		"_postman_id": "interview-apis-v3",
+		"name": "Interview Microservice APIs - Complete V3",
+		"description": "Complete API collection for Interview Microservice System with proper routing and authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8222",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "refreshToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "userId",
+			"value": "1",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"123456\",\n  \"fullName\": \"John Doe\",\n  \"roleName\": \"USER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"    console.log('✅ Registration successful!');",
+									"    console.log('Access Token:', response.accessToken);",
+									"    console.log('Verify Token:', response.verifyToken);",
+									"} else {",
+									"    console.log('❌ Registration failed:', pm.response.text());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"123456\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('accessToken', response.accessToken);",
+									"    pm.collectionVariables.set('refreshToken', response.refreshToken);",
+									"    console.log('✅ Login successful!');",
+									"} else {",
+									"    console.log('❌ Login failed:', pm.response.text());",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Verify Email",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/auth/verify?token={{verifyToken}}",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "verify"],
+							"query": [
+								{
+									"key": "token",
+									"value": "{{verifyToken}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Refresh Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/refresh",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "refresh"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "👤 User Management",
+			"item": [
+				{
+					"name": "Get User by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/users/{{userId}}",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{userId}}"]
+						}
+					}
+				},
+				{
+					"name": "Get All Users (Admin)",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/users?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["users"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fullName\": \"John Doe Updated\",\n  \"dateOfBirth\": \"1990-01-01\",\n  \"address\": \"123 Main St\",\n  \"isStudying\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{userId}}",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{userId}}"]
+						}
+					}
+				},
+				{
+					"name": "Update User Role (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"roleId\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/{{userId}}/role",
+							"host": ["{{base_url}}"],
+							"path": ["users", "{{userId}}", "role"]
+						}
+					}
+				},
+				{
+					"name": "Apply ELO Points",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": {{userId}},\n  \"action\": \"EXAM_COMPLETED\",\n  \"points\": 10,\n  \"description\": \"Completed Java exam\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/users/elo",
+							"host": ["{{base_url}}"],
+							"path": ["users", "elo"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "❓ Question Management",
+			"item": [
+				{
+					"name": "Get All Questions",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/questions/questions?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "questions"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Question by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/questions/questions/1",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "questions", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create Question",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"What is Java?\",\n  \"content\": \"Explain Java programming language\",\n  \"topicId\": 1,\n  \"levelId\": 1,\n  \"questionTypeId\": 1,\n  \"userId\": {{userId}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/questions/questions",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "questions"]
+						}
+					}
+				},
+				{
+					"name": "Approve Question (Admin)",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/questions/questions/1/approve?adminId={{userId}}",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "questions", "1", "approve"],
+							"query": [
+								{
+									"key": "adminId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Fields",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/questions/fields?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "fields"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Topics",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/questions/topics?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "topics"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Levels",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/questions/levels?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "levels"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Question Types",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/questions/question-types?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "question-types"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Answer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"content\": \"Java is a programming language\",\n  \"questionId\": 1,\n  \"userId\": {{userId}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/questions/answers",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "answers"]
+						}
+					}
+				},
+				{
+					"name": "Get Answers by Question",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/questions/questions/1/answers?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "questions", "1", "answers"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📝 Exam Management",
+			"item": [
+				{
+					"name": "Get All Exams",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/exams?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["exams"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Exam by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/exams/1",
+							"host": ["{{base_url}}"],
+							"path": ["exams", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create Exam",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Java Programming Test\",\n  \"position\": \"Software Developer\",\n  \"topics\": [1, 2],\n  \"questionTypes\": [1],\n  \"questionCount\": 10,\n  \"duration\": 60,\n  \"language\": \"Java\",\n  \"userId\": {{userId}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/exams",
+							"host": ["{{base_url}}"],
+							"path": ["exams"]
+						}
+					}
+				},
+				{
+					"name": "Publish Exam",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/exams/1/publish?userId={{userId}}",
+							"host": ["{{base_url}}"],
+							"path": ["exams", "1", "publish"],
+							"query": [
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Start Exam",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/exams/1/start",
+							"host": ["{{base_url}}"],
+							"path": ["exams", "1", "start"]
+						}
+					}
+				},
+				{
+					"name": "Complete Exam",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/exams/1/complete",
+							"host": ["{{base_url}}"],
+							"path": ["exams", "1", "complete"]
+						}
+					}
+				},
+				{
+					"name": "Submit Answer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"examId\": 1,\n  \"questionId\": 1,\n  \"userId\": {{userId}},\n  \"answer\": \"Java is object-oriented\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/exams/answers",
+							"host": ["{{base_url}}"],
+							"path": ["exams", "answers"]
+						}
+					}
+				},
+				{
+					"name": "Submit Result",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"examId\": 1,\n  \"userId\": {{userId}},\n  \"score\": 85,\n  \"totalQuestions\": 10,\n  \"correctAnswers\": 8,\n  \"timeSpent\": 45\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/exams/results",
+							"host": ["{{base_url}}"],
+							"path": ["exams", "results"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "📰 News Management",
+			"item": [
+				{
+					"name": "Get All News",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/news?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["news"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get News by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/news/1",
+							"host": ["{{base_url}}"],
+							"path": ["news", "1"]
+						}
+					}
+				},
+				{
+					"name": "Create News",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"New Java Features\",\n  \"content\": \"Latest Java updates\",\n  \"newsType\": \"TECHNOLOGY\",\n  \"fieldId\": 1,\n  \"userId\": {{userId}}\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/news",
+							"host": ["{{base_url}}"],
+							"path": ["news"]
+						}
+					}
+				},
+				{
+					"name": "Approve News (Admin)",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/news/1/approve?adminId={{userId}}",
+							"host": ["{{base_url}}"],
+							"path": ["news", "1", "approve"],
+							"query": [
+								{
+									"key": "adminId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Publish News (Admin)",
+					"request": {
+						"method": "POST",
+						"url": {
+							"raw": "{{base_url}}/news/1/publish",
+							"host": ["{{base_url}}"],
+							"path": ["news", "1", "publish"]
+						}
+					}
+				},
+				{
+					"name": "Get Recruitments",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/recruitments?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["recruitments"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "💼 Career Management",
+			"item": [
+				{
+					"name": "Create Career Preference",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": {{userId}},\n  \"preferredPosition\": \"Software Developer\",\n  \"preferredField\": \"Technology\",\n  \"salaryExpectation\": 50000,\n  \"workLocation\": \"Remote\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/career",
+							"host": ["{{base_url}}"],
+							"path": ["career"]
+						}
+					}
+				},
+				{
+					"name": "Get Career by ID",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/career/1",
+							"host": ["{{base_url}}"],
+							"path": ["career", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Career",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": {{userId}},\n  \"preferredPosition\": \"Senior Developer\",\n  \"preferredField\": \"Technology\",\n  \"salaryExpectation\": 70000,\n  \"workLocation\": \"Hybrid\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/career/update/1",
+							"host": ["{{base_url}}"],
+							"path": ["career", "update", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Career Preferences by User",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/career/preferences/{{userId}}?page=0&size=10",
+							"host": ["{{base_url}}"],
+							"path": ["career", "preferences", "{{userId}}"],
+							"query": [
+								{
+									"key": "page",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "🧠 NLP Service",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/health",
+							"host": ["{{base_url}}"],
+							"path": ["health"]
+						}
+					}
+				},
+				{
+					"name": "Grade Answer",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"question\": \"What is Java?\",\n  \"answer\": \"Java is a programming language\",\n  \"model\": \"gpt-3.5-turbo\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/grading/grade",
+							"host": ["{{base_url}}"],
+							"path": ["grading", "grade"]
+						}
+					}
+				},
+				{
+					"name": "Find Similar Questions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"question\": \"What is object-oriented programming?\",\n  \"limit\": 5\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/questions/similarity/find",
+							"host": ["{{base_url}}"],
+							"path": ["questions", "similarity", "find"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "❌ Error Testing",
+			"item": [
+				{
+					"name": "Register with Invalid Role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"123456\",\n  \"roleName\": \"INVALID_ROLE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					},
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Status code is 404', function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test('Response has RFC 7807 format', function () {",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('type');",
+									"    pm.expect(response).to.have.property('title');",
+									"    pm.expect(response).to.have.property('status');",
+									"    pm.expect(response).to.have.property('detail');",
+									"    pm.expect(response).to.have.property('errorCode');",
+									"    pm.expect(response).to.have.property('timestamp');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					]
+				},
+				{
+					"name": "Register with Duplicate Email",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"123456\",\n  \"roleName\": \"USER\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login with Invalid Credentials",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"wrong@example.com\",\n  \"password\": \"wrongpassword\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login",
+							"host": ["{{base_url}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				},
+				{
+					"name": "Access Protected Resource Without Token",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/users/1",
+							"host": ["{{base_url}}"],
+							"path": ["users", "1"]
+						}
+					}
+				},
+				{
+					"name": "Get Non-existent Resource",
+					"request": {
+						"method": "GET",
+						"url": {
+							"raw": "{{base_url}}/users/99999",
+							"host": ["{{base_url}}"],
+							"path": ["users", "99999"]
+						}
+					}
+				}
+			]
+		}
+	]
+}
+

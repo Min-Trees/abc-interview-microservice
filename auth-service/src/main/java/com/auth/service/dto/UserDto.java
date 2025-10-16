@@ -9,5 +9,8 @@ public class UserDto {
     private String roleName;
     private String email;
     private String fullName;
+    private String status;
+    private Integer eloScore;
+    private String eloRank;
     private String verifyToken;
 }

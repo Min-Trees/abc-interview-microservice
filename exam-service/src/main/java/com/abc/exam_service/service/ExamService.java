@@ -47,6 +47,10 @@ public class ExamService {
         return mappers.toResponse(examRepository.save(exam));
     }
 
+    public Page<ExamResponse> getAllExams(Pageable pageable) {
+        return examRepository.findAll(pageable).map(mappers::toResponse);
+    }
+
     public Page<ExamResponse> listExamsByUser(Long userId, Pageable pageable) {
         return examRepository.findByUserId(userId, pageable).map(mappers::toResponse);
     }
