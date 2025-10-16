@@ -158,13 +158,33 @@ public class QuestionService {
         return mappers.toResponse(questionRepository.save(q));
     }
 
+    @Transactional(readOnly = true)
     public Page<QuestionResponse> getAllQuestions(Pageable pageable) {
-        return questionRepository.findAll(pageable).map(mappers::toResponse);
+        return questionRepository.findAll(pageable).map(this::loadQuestionRelationships);
+    }
+    
+    private QuestionResponse loadQuestionRelationships(Question question) {
+        // Force load relationships
+        if (question.getField() != null) {
+            question.getField().getName();
+        }
+        if (question.getTopic() != null) {
+            question.getTopic().getName();
+        }
+        if (question.getLevel() != null) {
+            question.getLevel().getName();
+        }
+        if (question.getQuestionType() != null) {
+            question.getQuestionType().getName();
+        }
+        return mappers.toResponse(question);
     }
     
     public QuestionResponse getQuestionById(Long id) {
-        Question question = questionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
+        Question question = questionRepository.findByIdWithRelationships(id);
+        if (question == null) {
+            throw new RuntimeException("Question not found with id: " + id);
+        }
         return mappers.toResponse(question);
     }
     
@@ -194,7 +214,10 @@ public class QuestionService {
     }
 
     public QuestionResponse approveQuestion(Long id, Long adminId) {
-        Question q = questionRepository.findById(id).orElseThrow();
+        Question q = questionRepository.findByIdWithRelationships(id);
+        if (q == null) {
+            throw new RuntimeException("Question not found with id: " + id);
+        }
         q.setStatus("APPROVED");
         q.setApprovedBy(adminId);
         q.setApprovedAt(LocalDateTime.now());
@@ -202,15 +225,19 @@ public class QuestionService {
     }
 
     public QuestionResponse rejectQuestion(Long id, Long adminId) {
-        Question q = questionRepository.findById(id).orElseThrow();
+        Question q = questionRepository.findByIdWithRelationships(id);
+        if (q == null) {
+            throw new RuntimeException("Question not found with id: " + id);
+        }
         q.setStatus("REJECTED");
         q.setApprovedBy(adminId);
         q.setApprovedAt(LocalDateTime.now());
         return mappers.toResponse(questionRepository.save(q));
     }
     
+    @Transactional(readOnly = true)
     public Page<QuestionResponse> listQuestionsByTopic(Long topicId, Pageable pageable) {
-        return questionRepository.findByTopicId(topicId, pageable).map(mappers::toResponse);
+        return questionRepository.findByTopicId(topicId, pageable).map(this::loadQuestionRelationships);
     }
 
     // Answer CRUD
