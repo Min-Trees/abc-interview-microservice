@@ -91,7 +91,7 @@ public class QuestionController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public QuestionResponse createQuestion(@RequestBody QuestionRequest req) { return svc.createQuestion(req); }
 
-    @GetMapping("/questions")
+    @GetMapping
     public Page<QuestionResponse> getAllQuestions(Pageable pageable) { 
         return svc.getAllQuestions(pageable); 
     }

@@ -2,6 +2,7 @@ package com.abc.question_service.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,9 +42,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             Claims claims = Jwts.parser()
-                    .setSigningKey(jwtSecretKey)
-                    .parseClaimsJws(token)
-                    .getBody();
+                    .verifyWith((SecretKey) jwtSecretKey)
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
 
             String userId = claims.getSubject();
             List<String> roles = claims.get("roles", List.class);

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
@@ -158,26 +159,8 @@ public class QuestionService {
         return mappers.toResponse(questionRepository.save(q));
     }
 
-    @Transactional(readOnly = true)
     public Page<QuestionResponse> getAllQuestions(Pageable pageable) {
-        return questionRepository.findAll(pageable).map(this::loadQuestionRelationships);
-    }
-    
-    private QuestionResponse loadQuestionRelationships(Question question) {
-        // Force load relationships
-        if (question.getField() != null) {
-            question.getField().getName();
-        }
-        if (question.getTopic() != null) {
-            question.getTopic().getName();
-        }
-        if (question.getLevel() != null) {
-            question.getLevel().getName();
-        }
-        if (question.getQuestionType() != null) {
-            question.getQuestionType().getName();
-        }
-        return mappers.toResponse(question);
+        return questionRepository.findAll(pageable).map(mappers::toResponse);
     }
     
     public QuestionResponse getQuestionById(Long id) {
@@ -235,9 +218,8 @@ public class QuestionService {
         return mappers.toResponse(questionRepository.save(q));
     }
     
-    @Transactional(readOnly = true)
     public Page<QuestionResponse> listQuestionsByTopic(Long topicId, Pageable pageable) {
-        return questionRepository.findByTopicId(topicId, pageable).map(this::loadQuestionRelationships);
+        return questionRepository.findByTopicId(topicId, pageable).map(mappers::toResponse);
     }
 
     // Answer CRUD

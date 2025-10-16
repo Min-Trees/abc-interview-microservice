@@ -46,8 +46,9 @@ public class JwtService {
     }
 
     public io.jsonwebtoken.Claims parse(String token) {
-        return Jwts.parser()
+        return Jwts.parserBuilder()
                 .setSigningKey(jwtSecret)
+                .build()
                 .parseClaimsJws(token)
                 .getBody();
     }

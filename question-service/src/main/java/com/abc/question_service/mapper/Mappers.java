@@ -36,10 +36,10 @@ public interface Mappers {
     @Mapping(target = "fieldId", source = "field.id")
     @Mapping(target = "levelId", source = "level.id")
     @Mapping(target = "questionTypeId", source = "questionType.id")
-    @Mapping(target = "fieldName", source = "field.name")
-    @Mapping(target = "topicName", source = "topic.name")
-    @Mapping(target = "levelName", source = "level.name")
-    @Mapping(target = "questionTypeName", source = "questionType.name")
+    @Mapping(target = "fieldName", source = "field.name", defaultValue = "Unknown Field")
+    @Mapping(target = "topicName", source = "topic.name", defaultValue = "Unknown Topic")
+    @Mapping(target = "levelName", source = "level.name", defaultValue = "Unknown Level")
+    @Mapping(target = "questionTypeName", source = "questionType.name", defaultValue = "Unknown Type")
     QuestionResponse toResponse(Question entity);
     
     @Mapping(target = "question.id", source = "questionId")
