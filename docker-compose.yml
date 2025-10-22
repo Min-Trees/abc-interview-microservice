@@ -1,5 +1,6 @@
+version: '3.8'
+
 services:
-  # 🗄️ DATABASE
   postgres:
     image: postgres:15-alpine
     container_name: interview-postgres
@@ -20,7 +21,6 @@ services:
       timeout: 5s
       retries: 5
 
-  # 🔴 REDIS
   redis:
     image: redis:7-alpine
     container_name: interview-redis
@@ -34,15 +34,19 @@ services:
       timeout: 5s
       retries: 5
 
-  # 🔧 CONFIG SERVER
   config-service:
-    build: ./config-service
+    build:
+      context: .
+      dockerfile: ./config-service/Dockerfile
     container_name: interview-config-service
     ports:
       - "${CONFIG_SERVICE_PORT:-8888}:8888"
     environment:
       SPRING_PROFILES_ACTIVE: native
       CONFIG_SERVER_URI: ${CONFIG_SERVER_URI:-http://config-service:8888}
+      SPRING_CLOUD_CONFIG_SERVER_NATIVE_SEARCHLOCATIONS: file:///config-repo
+    volumes:
+      - ./config-repo:/config-repo:ro
     networks:
       - interview-network
     depends_on:
@@ -54,7 +58,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # 🔍 DISCOVERY SERVER
   discovery-service:
     build: ./discovery-service
     container_name: interview-discovery-service
@@ -74,12 +77,11 @@ services:
       timeout: 10s
       retries: 3
 
-  # 🌐 API GATEWAY
   gateway-service:
     build: ./gateway-service
     container_name: interview-gateway-service
     ports:
-      - "${GATEWAY_SERVICE_PORT:-8080}:8222"
+      - "${GATEWAY_SERVICE_PORT:-8080}:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
       JWT_SECRET: ${JWT_SECRET}
@@ -93,12 +95,11 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8222/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  # 🔐 AUTH SERVICE
   auth-service:
     build: ./auth-service
     container_name: interview-auth-service
@@ -130,7 +131,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # 👤 USER SERVICE
   user-service:
     build: ./user-service
     container_name: interview-user-service
@@ -155,7 +155,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # 🎯 CAREER SERVICE
   career-service:
     build: ./career-service
     container_name: interview-career-service
@@ -180,7 +179,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # ❓ QUESTION SERVICE
   question-service:
     build: ./question-service
     container_name: interview-question-service
@@ -205,7 +203,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # 📝 EXAM SERVICE
   exam-service:
     build: ./exam-service
     container_name: interview-exam-service
@@ -230,7 +227,6 @@ services:
       timeout: 10s
       retries: 3
 
-  # 📰 NEWS SERVICE
   news-service:
     build: ./news-service
     container_name: interview-news-service
@@ -254,34 +250,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
-
-
-  # 📊 MONITORING (Optional)
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: interview-prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - interview-network
-    profiles:
-      - monitoring
-
-  grafana:
-    image: grafana/grafana:latest
-    container_name: interview-grafana
-    ports:
-      - "3000:3000"
-    environment:
-      GF_SECURITY_ADMIN_PASSWORD: admin
-    volumes:
-      - grafana_data:/var/lib/grafana
-    networks:
-      - interview-network
-    profiles:
-      - monitoring
 
 volumes:
   postgres_data:

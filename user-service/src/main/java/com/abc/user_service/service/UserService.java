@@ -6,6 +6,7 @@ import com.abc.user_service.entity.*;
 import com.abc.user_service.mapper.UserMapper;
 import com.abc.user_service.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -36,8 +38,24 @@ public class UserService {
         user.setAddress(request.getAddress());
         user.setIsStudying(request.getIsStudying());
         
-        Role role = roleRepository.findById(request.getRoleId())
-                .orElseThrow(() -> new RuntimeException("Role not found"));
+        Role role;
+        if (request.getRoleId() != null) {
+            role = roleRepository.findById(request.getRoleId())
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+        } else if (request.getRoleName() != null) {
+            RoleName roleName;
+            try {
+                roleName = RoleName.valueOf(request.getRoleName().toUpperCase());
+            } catch (Exception e) {
+                throw new RuntimeException("Invalid role name");
+            }
+            role = roleRepository.findAll().stream()
+                    .filter(r -> r.getRoleName() == roleName)
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Role not found"));
+        } else {
+            throw new RuntimeException("Role is required");
+        }
         user.setRole(role);
         user.setStatus(UserStatus.PENDING);
         user.setEloScore(0);
@@ -160,9 +178,19 @@ public class UserService {
     }
 
     public UserResponse getByEmail(String email) {
+        log.info("=== UserService.getByEmail called with email: {}", email);
         User user = userRepository.findByEmail(email)
                 .orElse(null);
-        return user != null ? userMapper.toResponse(user) : null;
+        log.info("=== User found: {}", user != null);
+        if (user != null) {
+            log.info("=== User details - id: {}, email: {}, roleId: {}", user.getId(), user.getEmail(), user.getRole() != null ? user.getRole().getId() : null);
+        }
+        UserResponse response = user != null ? userMapper.toResponse(user) : null;
+        log.info("=== UserResponse created: {}", response != null);
+        if (response != null) {
+            log.info("=== Response details - id: {}, email: {}, roleId: {}", response.getId(), response.getEmail(), response.getRoleId());
+        }
+        return response;
     }
 
     public Boolean validatePassword(String email, String password) {
@@ -183,5 +211,15 @@ public class UserService {
         userRepository.save(user);
         
         return userMapper.toResponse(user);
+    }
+
+    public java.util.List<com.abc.user_service.dto.response.RoleResponse> getAllRoles() {
+        return roleRepository.findAll().stream()
+                .map(role -> com.abc.user_service.dto.response.RoleResponse.builder()
+                        .id(role.getId())
+                        .roleName(role.getRoleName())
+                        .description(role.getDescription())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
     }
 }

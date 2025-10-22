@@ -7,8 +7,11 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.util.List;
 
 @Configuration
 public class OpenApiConfig {
@@ -18,7 +21,15 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("News Service API")
-                        .description("News and Recruitment Management Service for Interview System")
+                        .description("News and Recruitment Management Service for Interview System\n\n" +
+                                "### 🔐 Authentication\n" +
+                                "Use the **Authorize** button above to add your JWT token.\n" +
+                                "Format: `Bearer your-jwt-token-here`\n\n" +
+                                "### 📝 How to Test\n" +
+                                "1. Get token from Auth Service (POST /auth/login)\n" +
+                                "2. Click **Authorize** button and paste token\n" +
+                                "3. Token will be saved for all requests\n" +
+                                "4. Use **Try it out** on any endpoint")
                         .version("1.0.0")
                         .contact(new Contact()
                                 .name("Interview System Team")
@@ -26,12 +37,22 @@ public class OpenApiConfig {
                         .license(new License()
                                 .name("MIT License")
                                 .url("https://opensource.org/licenses/MIT")))
+                .servers(List.of(
+                        new Server()
+                                .url("http://localhost:8087")
+                                .description("Local Development Server"),
+                        new Server()
+                                .url("http://localhost:8080")
+                                .description("API Gateway (Recommended)")
+                ))
                 .components(new Components()
                         .addSecuritySchemes("bearer-jwt", new SecurityScheme()
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")
-                                .description("JWT Authorization header using the Bearer scheme")))
+                                .in(SecurityScheme.In.HEADER)
+                                .name("Authorization")
+                                .description("JWT token for authentication. Format: Bearer {token}")))
                 .addSecurityItem(new SecurityRequirement().addList("bearer-jwt"));
     }
 }

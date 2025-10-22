@@ -3,14 +3,58 @@ import asyncio
 from typing import List, Dict, Any
 from .nlp_service import NLPService
 from .similarity_service import SimilarityService
+from .ai_studio_service import AIStudioService
 
 class GradingService:
     def __init__(self):
         self.nlp_service = NLPService()
         self.similarity_service = SimilarityService()
+        self.ai_studio_service = AIStudioService()
         
     async def grade_essay(self, question: str, answer: str, max_score: int = 100) -> Dict[str, Any]:
-        """Grade an essay answer comprehensively"""
+        """Grade an essay answer comprehensively using AI Studio"""
+        try:
+            # Use AI Studio for primary grading
+            ai_result = await self.ai_studio_service.grade_essay(question, answer, max_score)
+            
+            # Fallback to traditional NLP grading if AI Studio fails
+            if ai_result.get("score", 0) == 0 and "Error" in ai_result.get("feedback", ""):
+                return await self._grade_essay_traditional(question, answer, max_score)
+            
+            # Enhance AI Studio result with additional analysis
+            processed_question = await self.nlp_service.preprocess_text(question)
+            processed_answer = await self.nlp_service.preprocess_text(answer)
+            
+            # Add plagiarism check
+            plagiarism_result = await self.ai_studio_service.check_plagiarism(answer)
+            
+            # Combine AI Studio result with additional metrics
+            return {
+                "score": ai_result.get("score", 0),
+                "max_score": max_score,
+                "percentage": round((ai_result.get("score", 0) / max_score) * 100, 2),
+                "feedback": ai_result.get("feedback", ""),
+                "strengths": ai_result.get("strengths", []),
+                "weaknesses": ai_result.get("weaknesses", []),
+                "suggestions": ai_result.get("suggestions", []),
+                "confidence": 0.9,  # High confidence for AI Studio
+                "criteria_scores": ai_result.get("criteria_scores", {}),
+                "plagiarism_check": {
+                    "is_original": plagiarism_result.get("is_original", True),
+                    "confidence": plagiarism_result.get("confidence", 0.8),
+                    "similarity_score": plagiarism_result.get("similarity_score", 0.1),
+                    "concerns": plagiarism_result.get("concerns", [])
+                },
+                "grading_method": "ai_studio"
+            }
+            
+        except Exception as e:
+            print(f"Error in AI Studio essay grading: {e}")
+            # Fallback to traditional grading
+            return await self._grade_essay_traditional(question, answer, max_score)
+    
+    async def _grade_essay_traditional(self, question: str, answer: str, max_score: int = 100) -> Dict[str, Any]:
+        """Fallback traditional grading method"""
         try:
             # Preprocess texts
             processed_question = await self.nlp_service.preprocess_text(question)
@@ -56,11 +100,12 @@ class GradingService:
                 "strengths": strengths,
                 "weaknesses": weaknesses,
                 "suggestions": suggestions,
-                "confidence": confidence
+                "confidence": confidence,
+                "grading_method": "traditional_nlp"
             }
             
         except Exception as e:
-            print(f"Error in essay grading: {e}")
+            print(f"Error in traditional essay grading: {e}")
             return {
                 "score": 0,
                 "max_score": max_score,
@@ -69,7 +114,8 @@ class GradingService:
                 "strengths": [],
                 "weaknesses": ["Technical error occurred"],
                 "suggestions": ["Please try again"],
-                "confidence": 0.0
+                "confidence": 0.0,
+                "grading_method": "error"
             }
     
     async def _grade_content(self, question: str, answer: str, max_points: float) -> float:

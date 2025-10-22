@@ -49,9 +49,9 @@ public class ExamController {
         return examService.listExamsByUser(userId, pageable);
     }
 
-    @GetMapping("/type/{examType}")
-    public Page<ExamResponse> listExamsByType(@PathVariable String examType, Pageable pageable) {
-        return examService.listExamsByType(examType, pageable);
+    @GetMapping("/type")
+    public Page<ExamResponse> listExamsByType(@RequestParam String type, Pageable pageable) {
+        return examService.listExamsByType(type, pageable);
     }
 
     @PostMapping("/questions")
@@ -154,5 +154,10 @@ public class ExamController {
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ExamRegistrationResponse getRegistrationById(@PathVariable Long id) {
         return examService.getRegistrationById(id);
+    }
+
+    @GetMapping("/types")
+    public java.util.List<String> getExamTypes() {
+        return java.util.Arrays.asList("VIRTUAL", "RECRUITER");
     }
 }

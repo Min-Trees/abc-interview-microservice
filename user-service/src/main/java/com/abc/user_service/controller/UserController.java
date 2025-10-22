@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +26,20 @@ public class UserController {
         return userService.create(request);
     }
 
+    @GetMapping("/internal/user/{id}")
+    public UserResponse getUserInternal(@PathVariable Long id) {
+        return userService.getById(id);
+    }
+
     @GetMapping("/check-email/{email}")
     public Boolean checkEmailExists(@PathVariable String email) {
         return userService.checkEmailExists(email);
     }
 
     @GetMapping("/by-email/{email}")
-    public UserResponse getByEmail(@PathVariable String email) {
-        return userService.getByEmail(email);
+    public ResponseEntity<UserResponse> getByEmail(@PathVariable String email) {
+        UserResponse response = userService.getByEmail(email);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/validate-password")
@@ -96,5 +103,10 @@ public class UserController {
     @PreAuthorize("hasRole('ADMIN')")
     public Page<UserResponse> getUsersByStatus(@PathVariable UserStatus status, Pageable pageable) {
         return userService.getUsersByStatus(status, pageable);
+    }
+
+    @GetMapping("/roles")
+    public java.util.List<com.abc.user_service.dto.response.RoleResponse> getAllRoles() {
+        return userService.getAllRoles();
     }
 }

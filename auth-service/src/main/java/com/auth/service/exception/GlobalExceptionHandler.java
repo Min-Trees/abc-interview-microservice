@@ -7,6 +7,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
@@ -172,6 +173,23 @@ public class GlobalExceptionHandler {
                 .detail(ex.getMessage())
                 .instance(request.getPath().value())
                 .errorCode("RUNTIME_ERROR")
+                .traceId(UUID.randomUUID().toString())
+                .timestamp(Instant.now())
+                .build();
+        return Mono.just(new ResponseEntity<>(error, HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public Mono<ResponseEntity<ErrorResponse>> handleMessageNotReadable(
+            HttpMessageNotReadableException ex,
+            ServerHttpRequest request) {
+        ErrorResponse error = ErrorResponse.builder()
+                .type("https://errors.abc.com/INVALID_JSON")
+                .title("Malformed JSON Request")
+                .status(HttpStatus.BAD_REQUEST.value())
+                .detail(ex.getMostSpecificCause() != null ? ex.getMostSpecificCause().getMessage() : ex.getMessage())
+                .instance(request.getPath().value())
+                .errorCode("INVALID_JSON")
                 .traceId(UUID.randomUUID().toString())
                 .timestamp(Instant.now())
                 .build();

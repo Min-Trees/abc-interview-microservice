@@ -3,13 +3,21 @@ package com.abc.question_service.repository;
 import com.abc.question_service.entity.Question;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long> {
+    
+    @EntityGraph(attributePaths = {"field", "topic", "level", "questionType"})
+    Page<Question> findAll(Pageable pageable);
+    
+    @EntityGraph(attributePaths = {"field", "topic", "level", "questionType"})
     Page<Question> findByTopicId(Long topicId, Pageable pageable);
     
     @Query("SELECT q FROM Question q " +

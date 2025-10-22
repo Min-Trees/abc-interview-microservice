@@ -1,100 +1,57 @@
 server:
-  port: ${GATEWAY_SERVICE_PORT:8222}
+  port: 8080
 
 spring:
   application:
     name: api-gateway
-  config:
-    import: optional:configserver:${CONFIG_SERVER_URI:http://config-service:8888}
-  data:
-    redis:
-      host: ${REDIS_HOST:redis}
-      port: ${REDIS_PORT:6379}
-      connect-timeout: 10s
-      timeout: 3s
   cloud:
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: false
       routes:
+        # Auth Service
         - id: auth-service
-          uri: lb://AUTH-SERVICE
-          predicates: [ Path=/auth/** ]
-          filters:
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 5
-                redis-rate-limiter.burstCapacity: 10
-                key-resolver: "#{@remoteAddrKeyResolver}"
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/**
 
+        # User Service
         - id: user-service
-          uri: lb://USER-SERVICE
-          predicates: [ Path=/users/** ]
-          filters:
-            - AddUserInfoToHeader
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 5
-                redis-rate-limiter.burstCapacity: 10
-                key-resolver: "#{@remoteAddrKeyResolver}"
+          uri: http://localhost:8082
+          predicates:
+            - Path=/users/**
 
-        - id: exam-service
-          uri: lb://EXAM-SERVICE
-          predicates: [ Path=/exams/** ]
-          filters:
-            - AddUserInfoToHeader
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 5
-                redis-rate-limiter.burstCapacity: 10
-                key-resolver: "#{@remoteAddrKeyResolver}"
-
-        - id: career-service
-          uri: lb://CAREER-SERVICE
-          predicates: [ Path=/career/** ]
-          filters:
-            - AddUserInfoToHeader
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 5
-                redis-rate-limiter.burstCapacity: 10
-                key-resolver: "#{@remoteAddrKeyResolver}"
-
+        # Question Service
         - id: question-service
-          uri: lb://QUESTION-SERVICE
-          predicates: [ Path=/questions/** ]
-          filters:
-            - AddUserInfoToHeader
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 5
-                redis-rate-limiter.burstCapacity: 10
-                key-resolver: "#{@remoteAddrKeyResolver}"
+          uri: http://localhost:8085
+          predicates:
+            - Path=/questions/**
 
+        # Exam Service
+        - id: exam-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/exams/**
+
+        # Career Service
+        - id: career-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/career/**
+
+        # News Service
         - id: news-service
-          uri: lb://NEWS-SERVICE
-          predicates: [ Path=/news/**, Path=/recruitments/** ]
-          filters:
-            - AddUserInfoToHeader
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 5
-                redis-rate-limiter.burstCapacity: 10
-                key-resolver: "#{@remoteAddrKeyResolver}"
+          uri: http://localhost:8087
+          predicates:
+            - Path=/news/**
+            - Path=/recruitments/**
 
+        # NLP Service
         - id: nlp-service
-          uri: lb://NLP-SERVICE
-          predicates: [ Path=/health, Path=/grading/**, Path=/questions/similarity/** ]
-          filters:
-            - AddUserInfoToHeader
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 5
-                redis-rate-limiter.burstCapacity: 10
-                key-resolver: "#{@remoteAddrKeyResolver}"
-
+          uri: http://localhost:8088
+          predicates:
+            - Path=/health
+            - Path=/grading/**
+            - Path=/questions/similarity/**
+            - Path=/ai-studio/**
       globalcors:
         cors-configurations:
           '[/**]':
@@ -102,43 +59,20 @@ spring:
             allowed-methods: "*"
             allowed-headers: "*"
             allow-credentials: false
-      default-filters:
-        - name: DedupeResponseHeader
-          args:
-            name: Access-Control-Allow-Credentials Access-Control-Allow-Origin
-            strategy: RETAIN_UNIQUE
 
-eureka:
-  client:
-    service-url:
-      defaultZone: ${EUREKA_DEFAULT_ZONE:http://discovery-service:8761/eureka/}
-    register-with-eureka: true
-    fetch-registry: true
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${random.value}
-
+# Management endpoints
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,gateway,prometheus
+        include: health,info
   endpoint:
-    gateway:
-      enabled: true
     health:
       show-details: always
-  prometheus:
-    metrics:
-      export:
-        enabled: true
 
+# Logging
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty: DEBUG
-    com.abc.gateway_service: DEBUG
-
-# CHO DECODER (HS256): cùng secret với auth-service (Base64)
-jwt:
-  secret: ${JWT_SECRET:UCIafMmHwgsJKIgg4xVAL/eOvR3ZXD/ZnYE9AfMaMQg=}
+    org.springframework.cloud.gateway: INFO
+    reactor.netty: INFO
+    com.abc.gateway_service: INFO

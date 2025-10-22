@@ -16,6 +16,7 @@ public interface Mappers {
     @Mapping(target = "field.id", source = "fieldId")
     Topic toEntity(TopicRequest req);
     @Mapping(target = "fieldId", source = "field.id")
+    @Mapping(target = "fieldName", source = "field.name")
     TopicResponse toResponse(Topic entity);
 
     Level toEntity(LevelRequest req);

@@ -28,6 +28,7 @@ public class SecurityConfig {
                         .requestMatchers("/users/by-email/**").permitAll()
                         .requestMatchers("/users/validate-password").permitAll()
                         .requestMatchers("/users/verify-token").permitAll()
+                        .requestMatchers("/users/roles").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

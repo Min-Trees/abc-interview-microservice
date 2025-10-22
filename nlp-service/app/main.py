@@ -9,6 +9,7 @@ from .services.nlp_service import NLPService
 from .services.similarity_service import SimilarityService
 from .services.grading_service import GradingService
 from .services.integration_service import IntegrationService
+from .services.ai_studio_service import AIStudioService
 from .models.schemas import (
     SimilarityRequest, SimilarityResponse,
     GradingRequest, GradingResponse,
@@ -44,6 +45,7 @@ nlp_service = NLPService()
 similarity_service = SimilarityService()
 grading_service = GradingService()
 integration_service = IntegrationService()
+ai_studio_service = AIStudioService()
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(security)):
     """Simple token verification - in production, use proper JWT validation"""
@@ -160,6 +162,35 @@ async def get_question_analytics(
     """Get analytics for a specific question"""
     try:
         result = await integration_service.get_question_analytics(question_id)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/ai-studio/validate-answer")
+async def validate_answer_with_ai_studio(
+    request: dict,
+    token: str = Depends(verify_token)
+):
+    """Validate an answer using AI Studio"""
+    try:
+        question = request.get("question", "")
+        answer = request.get("answer", "")
+        expected_answer = request.get("expected_answer")
+        
+        result = await ai_studio_service.validate_answer(question, answer, expected_answer)
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/ai-studio/check-plagiarism")
+async def check_plagiarism_with_ai_studio(
+    request: dict,
+    token: str = Depends(verify_token)
+):
+    """Check for plagiarism using AI Studio"""
+    try:
+        text = request.get("text", "")
+        result = await ai_studio_service.check_plagiarism(text)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

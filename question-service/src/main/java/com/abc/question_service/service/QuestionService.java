@@ -57,7 +57,9 @@ public class QuestionService {
     
     // Topic CRUD
     public TopicResponse createTopic(TopicRequest req) { 
-        return mappers.toResponse(topicRepository.save(mappers.toEntity(req))); 
+        Topic topic = mappers.toEntity(req);
+        topic = topicRepository.save(topic);
+        return mappers.toResponse(topicRepository.findByIdWithField(topic.getId()));
     }
     
     public Page<TopicResponse> getAllTopics(Pageable pageable) { 
@@ -65,11 +67,14 @@ public class QuestionService {
     }
     
     public TopicResponse getTopicById(Long id) {
-        Topic topic = topicRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Topic not found with id: " + id));
+        Topic topic = topicRepository.findByIdWithField(id);
+        if (topic == null) {
+            throw new RuntimeException("Topic not found with id: " + id);
+        }
         return mappers.toResponse(topic);
     }
     
+    @Transactional
     public TopicResponse updateTopic(Long id, TopicRequest req) {
         Topic topic = topicRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Topic not found with id: " + id));
@@ -77,7 +82,8 @@ public class QuestionService {
         topic.setDescription(req.getDescription());
         topic.setField(fieldRepository.findById(req.getFieldId())
                 .orElseThrow(() -> new RuntimeException("Field not found with id: " + req.getFieldId())));
-        return mappers.toResponse(topicRepository.save(topic));
+        topic = topicRepository.save(topic);
+        return mappers.toResponse(topicRepository.findByIdWithField(topic.getId()));
     }
     
     public void deleteTopic(Long id) {
@@ -150,13 +156,30 @@ public class QuestionService {
     }
 
     // Question CRUD
+    @Transactional
     public QuestionResponse createQuestion(QuestionRequest req) {
-        Question q = mappers.toEntity(req);
+        Question q = new Question();
+        q.setUserId(req.getUserId());
+        q.setQuestionContent(req.getContent());
+        q.setQuestionAnswer(req.getAnswer());
+        q.setLanguage(req.getLanguage());
         q.setStatus("PENDING");
         q.setUsefulVote(0);
         q.setUnusefulVote(0);
         q.setCreatedAt(LocalDateTime.now());
-        return mappers.toResponse(questionRepository.save(q));
+        
+        // Fetch related entities from DB
+        q.setTopic(topicRepository.findById(req.getTopicId())
+                .orElseThrow(() -> new RuntimeException("Topic not found with id: " + req.getTopicId())));
+        q.setField(fieldRepository.findById(req.getFieldId())
+                .orElseThrow(() -> new RuntimeException("Field not found with id: " + req.getFieldId())));
+        q.setLevel(levelRepository.findById(req.getLevelId())
+                .orElseThrow(() -> new RuntimeException("Level not found with id: " + req.getLevelId())));
+        q.setQuestionType(questionTypeRepository.findById(req.getQuestionTypeId())
+                .orElseThrow(() -> new RuntimeException("QuestionType not found with id: " + req.getQuestionTypeId())));
+        
+        q = questionRepository.save(q);
+        return mappers.toResponse(questionRepository.findByIdWithRelationships(q.getId()));
     }
 
     public Page<QuestionResponse> getAllQuestions(Pageable pageable) {
@@ -171,6 +194,7 @@ public class QuestionService {
         return mappers.toResponse(question);
     }
     
+    @Transactional
     public QuestionResponse updateQuestion(Long id, QuestionRequest req) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Question not found with id: " + id));
@@ -186,7 +210,8 @@ public class QuestionService {
                 .orElseThrow(() -> new RuntimeException("Level not found with id: " + req.getLevelId())));
         question.setQuestionType(questionTypeRepository.findById(req.getQuestionTypeId())
                 .orElseThrow(() -> new RuntimeException("QuestionType not found with id: " + req.getQuestionTypeId())));
-        return mappers.toResponse(questionRepository.save(question));
+        question = questionRepository.save(question);
+        return mappers.toResponse(questionRepository.findByIdWithRelationships(question.getId()));
     }
     
     public void deleteQuestion(Long id) {
@@ -223,11 +248,24 @@ public class QuestionService {
     }
 
     // Answer CRUD
+    @Transactional
     public AnswerResponse createAnswer(AnswerRequest req) {
-        Answer a = mappers.toEntity(req);
+        Answer a = new Answer();
+        a.setUserId(req.getUserId());
+        a.setContent(req.getContent());
+        a.setIsCorrect(req.getIsCorrect());
+        a.setIsSampleAnswer(req.getIsSampleAnswer());
+        a.setOrderNumber(req.getOrderNumber());
         a.setUsefulVote(0);
         a.setUnusefulVote(0);
         a.setCreatedAt(LocalDateTime.now());
+        
+        // Fetch related entities from DB
+        a.setQuestion(questionRepository.findById(req.getQuestionId())
+                .orElseThrow(() -> new RuntimeException("Question not found with id: " + req.getQuestionId())));
+        a.setQuestionType(questionTypeRepository.findById(req.getQuestionTypeId())
+                .orElseThrow(() -> new RuntimeException("QuestionType not found with id: " + req.getQuestionTypeId())));
+        
         return mappers.toResponse(answerRepository.save(a));
     }
 

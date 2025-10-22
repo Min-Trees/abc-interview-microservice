@@ -31,9 +31,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String requestURI = request.getRequestURI();
+        String method = request.getMethod();
+        log.debug("JWT Filter - Request URI: {}, Method: {}", requestURI, method);
+        
+        // Skip JWT validation for public endpoints
+        if (requestURI.startsWith("/actuator/") || 
+            requestURI.startsWith("/v3/api-docs") ||
+            requestURI.startsWith("/swagger-ui")) {
+            log.debug("JWT Filter - Skipping JWT validation for public endpoint");
+            filterChain.doFilter(request, response);
+            return;
+        }
+        
+        // Allow GET requests to taxonomy endpoints without authentication
+        if ("GET".equals(method) && 
+            (requestURI.startsWith("/questions/fields") ||
+             requestURI.startsWith("/questions/levels") ||
+             requestURI.startsWith("/questions/topics") ||
+             requestURI.startsWith("/questions/question-types") ||
+             requestURI.matches("/questions(/\\d+)?$") ||
+             requestURI.startsWith("/questions/answers"))) {
+            log.debug("JWT Filter - Skipping JWT validation for GET request to public endpoint");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String header = request.getHeader("Authorization");
 
         if (header == null || !header.startsWith("Bearer ")) {
+            log.debug("JWT Filter - No valid Authorization header");
             filterChain.doFilter(request, response);
             return;
         }
@@ -52,13 +79,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             if (userId != null && roles != null) {
                 List<SimpleGrantedAuthority> authorities = roles.stream()
-                        .map(SimpleGrantedAuthority::new)
+                        .map(role -> new SimpleGrantedAuthority("ROLE_" + role))
                         .collect(Collectors.toList());
 
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                         userId, null, authorities);
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.debug("JWT Filter - Authentication set for user: {} with roles: {}", userId, authorities);
             }
 
         } catch (Exception e) {

@@ -22,6 +22,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
+        String requestURI = request.getRequestURI();
+        System.out.println("JWT Filter - Request URI: " + requestURI);
+        
+        // Skip JWT validation for internal endpoints
+        if (requestURI.startsWith("/users/internal/") || 
+            requestURI.startsWith("/users/check-email/") ||
+            requestURI.startsWith("/users/by-email/") ||
+            requestURI.startsWith("/users/validate-password") ||
+            requestURI.startsWith("/users/verify-token") ||
+            requestURI.startsWith("/actuator/")) {
+            System.out.println("JWT Filter - Skipping JWT validation for internal endpoint");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String authHeader = request.getHeader("Authorization");
         System.out.println("JWT Filter - Authorization header: " + authHeader);
         

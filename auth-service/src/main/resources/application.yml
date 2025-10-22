@@ -4,12 +4,13 @@ server:
 spring:
   application:
     name: auth-service
-  config:
-    import: optional:configserver:${CONFIG_SERVER_URI:http://config-service:8888}
+  cloud:
+    config:
+      enabled: false
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${AUTH_DB:authdb}
-    username: ${POSTGRES_USER:postgres}
-    password: ${POSTGRES_PASSWORD:123456}
+    url: jdbc:postgresql://localhost:5432/authdb
+    username: postgres
+    password: 123456
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -55,6 +56,8 @@ logging:
     com.auth.service: DEBUG
     org.springframework.web: DEBUG
     reactor.netty: DEBUG
+    org.springframework.http.codec: TRACE
+    com.fasterxml.jackson.databind: DEBUG
 
 # Actuator Configuration
 management:
@@ -70,7 +73,15 @@ management:
 springdoc:
   api-docs:
     path: /v3/api-docs
+    enabled: true
   swagger-ui:
     path: /swagger-ui.html
+    enabled: true
     operationsSorter: method
     tagsSorter: alpha
+    tryItOutEnabled: true
+    filter: true
+    persistAuthorization: true
+    displayRequestDuration: true
+    defaultModelsExpandDepth: 1
+    defaultModelExpandDepth: 1

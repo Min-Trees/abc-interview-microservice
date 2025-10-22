@@ -24,6 +24,10 @@ RUN python -m spacy download en_core_web_sm || echo "SpaCy model download failed
 # Copy application code
 COPY . .
 
+# Set environment variables
+ENV AI_STUDIO_API_KEY=AIzaSyARkZIcLTr1n-zH2U38ztdFzxq1zwKED_c
+ENV NLP_SERVICE_PORT=8088
+
 # Expose port
 EXPOSE 8088
 

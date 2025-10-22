@@ -15,6 +15,10 @@ spring:
           uri: file:/config-repo
           default-label: main
           search-paths: .
+        native:
+          search-locations: classpath:/config-repo/, file:/config-repo
+  profiles:
+    active: native
 management:
   endpoints:
     web:

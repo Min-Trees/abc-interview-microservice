@@ -247,7 +247,7 @@ public class AuthService {
             Long userId = Long.valueOf(claims.getSubject());
             
             return webClient.get()
-                    .uri("/users/{id}", userId)
+                    .uri("/users/internal/user/{id}", userId)
                     .retrieve()
                     .bodyToMono(UserDto.class)
                     .doOnNext(userDto -> log.info("User info retrieved for: {}", userDto.getEmail()))

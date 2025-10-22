@@ -245,13 +245,13 @@
                 <div class="service-description">
                     Central entry point for all microservices. Routes requests to appropriate services.
                 </div>
-                <div class="service-port">Port: 8222</div>
+                <div class="service-port">Port: 8080</div>
                 <div class="service-links">
-                    <a href="http://localhost:8222/swagger-ui.html" class="btn btn-primary" target="_blank">
-                        📖 Swagger UI
+                    <a href="http://localhost:8080/actuator/health" class="btn btn-primary" target="_blank">
+                        🏥 Health Check
                     </a>
-                    <a href="http://localhost:8222/v3/api-docs" class="btn btn-secondary" target="_blank">
-                        📄 API Docs
+                    <a href="http://localhost:8080/actuator/routes" class="btn btn-secondary" target="_blank">
+                        🛣️ Routes
                     </a>
                 </div>
             </div>
@@ -299,12 +299,12 @@
                 <div class="service-description">
                     Question bank management. Create, update, categorize questions by field and difficulty.
                 </div>
-                <div class="service-port">Port: 8083</div>
+                <div class="service-port">Port: 8085</div>
                 <div class="service-links">
-                    <a href="http://localhost:8083/swagger-ui.html" class="btn btn-primary" target="_blank">
+                    <a href="http://localhost:8085/swagger-ui.html" class="btn btn-primary" target="_blank">
                         📖 Swagger UI
                     </a>
-                    <a href="http://localhost:8083/v3/api-docs" class="btn btn-secondary" target="_blank">
+                    <a href="http://localhost:8085/v3/api-docs" class="btn btn-secondary" target="_blank">
                         📄 API Docs
                     </a>
                 </div>
@@ -317,12 +317,12 @@
                 <div class="service-description">
                     Exam management. Create exams, submit answers, grade exams, track exam history.
                 </div>
-                <div class="service-port">Port: 8084</div>
+                <div class="service-port">Port: 8086</div>
                 <div class="service-links">
-                    <a href="http://localhost:8084/swagger-ui.html" class="btn btn-primary" target="_blank">
+                    <a href="http://localhost:8086/swagger-ui.html" class="btn btn-primary" target="_blank">
                         📖 Swagger UI
                     </a>
-                    <a href="http://localhost:8084/v3/api-docs" class="btn btn-secondary" target="_blank">
+                    <a href="http://localhost:8086/v3/api-docs" class="btn btn-secondary" target="_blank">
                         📄 API Docs
                     </a>
                 </div>
@@ -335,12 +335,12 @@
                 <div class="service-description">
                     Job posting and career opportunities. Create, search, and apply for job positions.
                 </div>
-                <div class="service-port">Port: 8085</div>
+                <div class="service-port">Port: 8084</div>
                 <div class="service-links">
-                    <a href="http://localhost:8085/swagger-ui.html" class="btn btn-primary" target="_blank">
+                    <a href="http://localhost:8084/swagger-ui.html" class="btn btn-primary" target="_blank">
                         📖 Swagger UI
                     </a>
-                    <a href="http://localhost:8085/v3/api-docs" class="btn btn-secondary" target="_blank">
+                    <a href="http://localhost:8084/v3/api-docs" class="btn btn-secondary" target="_blank">
                         📄 API Docs
                     </a>
                 </div>
@@ -353,12 +353,12 @@
                 <div class="service-description">
                     News and announcements. Publish, categorize, and manage tech news articles.
                 </div>
-                <div class="service-port">Port: 8086</div>
+                <div class="service-port">Port: 8087</div>
                 <div class="service-links">
-                    <a href="http://localhost:8086/swagger-ui.html" class="btn btn-primary" target="_blank">
+                    <a href="http://localhost:8087/swagger-ui.html" class="btn btn-primary" target="_blank">
                         📖 Swagger UI
                     </a>
-                    <a href="http://localhost:8086/v3/api-docs" class="btn btn-secondary" target="_blank">
+                    <a href="http://localhost:8087/v3/api-docs" class="btn btn-secondary" target="_blank">
                         📄 API Docs
                     </a>
                 </div>
@@ -385,7 +385,7 @@
             <div class="info-grid">
                 <div class="info-item">
                     <strong>🌐 Gateway URL</strong>
-                    <span>http://localhost:8222</span>
+                    <span>http://localhost:8080</span>
                 </div>
                 <div class="info-item">
                     <strong>📊 Eureka Dashboard</strong>
@@ -397,48 +397,68 @@
                 </div>
                 <div class="info-item">
                     <strong>📚 Postman Collection</strong>
-                    <span>INTERVIEW_APIS_COMPLETE.postman_collection.json</span>
+                    <span>Interview-Microservice-ABC-FINAL.postman_collection.json</span>
                 </div>
             </div>
 
-            <h2 style="margin-top: 40px;">🔑 Common Endpoints</h2>
+            <h2 style="margin-top: 40px;">🔑 Common Endpoints (via Gateway)</h2>
             <div class="endpoint-list">
                 <div class="endpoint-item">
                     <span class="method method-post">POST</span>
-                    <span>/api/v1/auth/register - Register new user</span>
+                    <span>/auth/register - Register new user</span>
                 </div>
                 <div class="endpoint-item">
                     <span class="method method-post">POST</span>
-                    <span>/api/v1/auth/login - User login</span>
+                    <span>/auth/login - User login</span>
                 </div>
                 <div class="endpoint-item">
                     <span class="method method-get">GET</span>
-                    <span>/api/v1/users/{id} - Get user by ID</span>
+                    <span>/auth/user-info - Get current user info</span>
                 </div>
                 <div class="endpoint-item">
                     <span class="method method-get">GET</span>
-                    <span>/api/v1/questions - Get all questions</span>
+                    <span>/users - Get all users</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method method-get">GET</span>
+                    <span>/users/{id} - Get user by ID</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method method-get">GET</span>
+                    <span>/questions/fields - Get question fields</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method method-get">GET</span>
+                    <span>/questions/topics - Get question topics</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method method-get">GET</span>
+                    <span>/questions/levels - Get question levels</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method method-get">GET</span>
+                    <span>/exams - Get all exams</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method method-get">GET</span>
+                    <span>/career - Get job listings</span>
+                </div>
+                <div class="endpoint-item">
+                    <span class="method method-get">GET</span>
+                    <span>/news - Get news articles</span>
                 </div>
                 <div class="endpoint-item">
                     <span class="method method-post">POST</span>
-                    <span>/api/v1/exams - Create new exam</span>
-                </div>
-                <div class="endpoint-item">
-                    <span class="method method-get">GET</span>
-                    <span>/api/v1/careers - Get job listings</span>
-                </div>
-                <div class="endpoint-item">
-                    <span class="method method-get">GET</span>
-                    <span>/api/v1/news - Get news articles</span>
+                    <span>/ai-studio/validate-answer - AI answer validation</span>
                 </div>
             </div>
 
             <h2 style="margin-top: 40px;">⚙️ System Information</h2>
             <div style="margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
                 <p style="margin-bottom: 10px;"><strong>Architecture:</strong> Microservices with Spring Cloud</p>
-                <p style="margin-bottom: 10px;"><strong>Service Discovery:</strong> Netflix Eureka</p>
+                <p style="margin-bottom: 10px;"><strong>Service Discovery:</strong> Direct Connection (Eureka Disabled)</p>
                 <p style="margin-bottom: 10px;"><strong>API Gateway:</strong> Spring Cloud Gateway</p>
-                <p style="margin-bottom: 10px;"><strong>Configuration:</strong> Spring Cloud Config</p>
+                <p style="margin-bottom: 10px;"><strong>Configuration:</strong> Local Configuration (Config Server Disabled)</p>
                 <p style="margin-bottom: 10px;"><strong>Database:</strong> PostgreSQL (separate DB per service)</p>
                 <p style="margin-bottom: 10px;"><strong>Authentication:</strong> JWT Bearer Tokens</p>
                 <p style="margin-bottom: 10px;"><strong>Error Format:</strong> RFC 7807 Problem Details</p>
@@ -468,7 +488,7 @@
         // Auto-refresh service status (optional)
         console.log('Interview Microservices API Documentation');
         console.log('All services running on localhost');
-        console.log('Gateway: http://localhost:8222');
+        console.log('Gateway: http://localhost:8080');
     </script>
 </body>
 </html>

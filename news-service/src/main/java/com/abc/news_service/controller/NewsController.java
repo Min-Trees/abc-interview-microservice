@@ -66,9 +66,9 @@ public class NewsController {
         return newsService.getAllNews(pageable);
     }
 
-    @GetMapping("/type/{newsType}")
-    public Page<NewsResponse> listNewsByType(@PathVariable String newsType, Pageable pageable) {
-        return newsService.listNewsByType(newsType, pageable);
+    @GetMapping("/type")
+    public Page<NewsResponse> listNewsByType(@RequestParam String type, Pageable pageable) {
+        return newsService.listNewsByType(type, pageable);
     }
 
     @GetMapping("/user/{userId}")
@@ -97,6 +97,11 @@ public class NewsController {
     @PreAuthorize("hasRole('ADMIN')")
     public Page<NewsResponse> listPendingModeration(Pageable pageable) {
         return newsService.listPendingModeration(pageable);
+    }
+
+    @GetMapping("/types")
+    public java.util.List<String> getNewsTypes() {
+        return java.util.Arrays.asList("NEWS", "RECRUITMENT");
     }
 }
 

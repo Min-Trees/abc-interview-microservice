@@ -2,7 +2,9 @@ package com.auth.service.controller;
 
 import com.auth.service.dto.*;
 import com.auth.service.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
@@ -16,9 +18,9 @@ public class AuthController {
         this.authService = authService;
     }
 
-    @PostMapping("/register")
+    @PostMapping(value = "/register", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Mono<TokenResponse> register(@RequestBody RegisterRequest request) {
+    public Mono<TokenResponse> register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
 
