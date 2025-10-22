@@ -13,11 +13,39 @@ spring:
           predicates:
             - Path=/auth/**
 
+        # Auth Service Swagger
+        - id: auth-swagger-ui
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/swagger-ui.html
+          filters:
+            - RewritePath=/auth/swagger-ui.html,/swagger-ui.html
+        - id: auth-api-docs
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/v3/api-docs
+          filters:
+            - RewritePath=/auth/v3/api-docs,/v3/api-docs
+
         # User Service
         - id: user-service
           uri: http://localhost:8082
           predicates:
             - Path=/users/**
+
+        # User Service Swagger
+        - id: user-swagger-ui
+          uri: http://localhost:8082
+          predicates:
+            - Path=/users/swagger-ui.html
+          filters:
+            - RewritePath=/users/swagger-ui.html,/swagger-ui.html
+        - id: user-api-docs
+          uri: http://localhost:8082
+          predicates:
+            - Path=/users/v3/api-docs
+          filters:
+            - RewritePath=/users/v3/api-docs,/v3/api-docs
 
         # Question Service
         - id: question-service
@@ -25,11 +53,39 @@ spring:
           predicates:
             - Path=/questions/**
 
+        # Question Service Swagger
+        - id: question-swagger-ui
+          uri: http://localhost:8085
+          predicates:
+            - Path=/questions/swagger-ui.html
+          filters:
+            - RewritePath=/questions/swagger-ui.html,/swagger-ui.html
+        - id: question-api-docs
+          uri: http://localhost:8085
+          predicates:
+            - Path=/questions/v3/api-docs
+          filters:
+            - RewritePath=/questions/v3/api-docs,/v3/api-docs
+
         # Exam Service
         - id: exam-service
           uri: http://localhost:8086
           predicates:
             - Path=/exams/**
+
+        # Exam Service Swagger
+        - id: exam-swagger-ui
+          uri: http://localhost:8086
+          predicates:
+            - Path=/exams/swagger-ui.html
+          filters:
+            - RewritePath=/exams/swagger-ui.html,/swagger-ui.html
+        - id: exam-api-docs
+          uri: http://localhost:8086
+          predicates:
+            - Path=/exams/v3/api-docs
+          filters:
+            - RewritePath=/exams/v3/api-docs,/v3/api-docs
 
         # Career Service
         - id: career-service
@@ -37,12 +93,40 @@ spring:
           predicates:
             - Path=/career/**
 
+        # Career Service Swagger
+        - id: career-swagger-ui
+          uri: http://localhost:8084
+          predicates:
+            - Path=/career/swagger-ui.html
+          filters:
+            - RewritePath=/career/swagger-ui.html,/swagger-ui.html
+        - id: career-api-docs
+          uri: http://localhost:8084
+          predicates:
+            - Path=/career/v3/api-docs
+          filters:
+            - RewritePath=/career/v3/api-docs,/v3/api-docs
+
         # News Service
         - id: news-service
           uri: http://localhost:8087
           predicates:
             - Path=/news/**
             - Path=/recruitments/**
+
+        # News Service Swagger
+        - id: news-swagger-ui
+          uri: http://localhost:8087
+          predicates:
+            - Path=/news/swagger-ui.html
+          filters:
+            - RewritePath=/news/swagger-ui.html,/swagger-ui.html
+        - id: news-api-docs
+          uri: http://localhost:8087
+          predicates:
+            - Path=/news/v3/api-docs
+          filters:
+            - RewritePath=/news/v3/api-docs,/v3/api-docs
 
         # NLP Service
         - id: nlp-service

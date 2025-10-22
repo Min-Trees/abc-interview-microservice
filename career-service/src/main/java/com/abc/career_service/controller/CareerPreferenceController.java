@@ -28,7 +28,7 @@ public class CareerPreferenceController {
         return careerService.updateCareer(careerId, request);
     }
 
-    @GetMapping("/{careerId}")
+    @GetMapping("/{careerId:[0-9]+}")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public CareerPreferenceResponse getCareerById(@PathVariable Long careerId){
         return careerService.getCareerById(careerId);

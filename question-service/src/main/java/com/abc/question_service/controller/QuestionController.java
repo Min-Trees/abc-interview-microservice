@@ -244,7 +244,7 @@ public class QuestionController {
         return svc.getAllQuestions(pageable); 
     }
     
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public QuestionResponse getQuestionById(@PathVariable Long id) { return svc.getQuestionById(id); }
     
     @PutMapping("/{id}")

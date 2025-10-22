@@ -121,7 +121,10 @@ public class ExamController {
     }
 
     // Additional CRUD endpoints
-    @GetMapping("/{id}")
+
+
+
+    @GetMapping("/{id:[0-9]+}")
     public ExamResponse getExamById(@PathVariable Long id) {
         return examService.getExamById(id);
     }

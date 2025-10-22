@@ -20,7 +20,7 @@ public class NewsController {
         return newsService.createNews(req);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public NewsResponse getNewsById(@PathVariable Long id) {
         return newsService.getNewsById(id);
     }

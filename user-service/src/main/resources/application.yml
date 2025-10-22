@@ -29,7 +29,7 @@ spring:
       mail.smtp.writetimeout: 10000
 
 app:
-  verification-url: ${VERIFICATION_URL:http://gateway-service:8080/auth/verify}
+  verification-url: ${VERIFICATION_URL:http://localhost:8080/auth/verify}
 
 jwt:
   secret: ${JWT_SECRET:UCIafMmHwgsJKIgg4xVAL/eOvR3ZXD/ZnYE9AfMaMQg=}

@@ -52,7 +52,7 @@ public class UserController {
         return userService.verifyToken(request.get("token"));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{id:[0-9]+}")
     public UserResponse getById(@PathVariable Long id) {
         return userService.getById(id);
     }
